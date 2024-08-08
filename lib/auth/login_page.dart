@@ -1,11 +1,29 @@
-import 'package:delightful_toast/delight_toast.dart';
-import 'package:delightful_toast/toast/components/toast_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/Home/home_page.dart';
 import 'package:law_app/auth/authProviders/googleAuth.dart';
 import 'package:law_app/auth/authProviders/linkedinAuth.dart';
 import 'package:law_app/auth/signup_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+// Your custom showToast function
+void showToast({
+  required String message,
+  ToastGravity position = ToastGravity.BOTTOM,
+  Toast length = Toast.LENGTH_SHORT,
+  Color backgroundColor = const Color.fromARGB(255, 54, 160, 160),
+  Color textColor = Colors.white,
+  double fontSize = 16.0,
+}) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: length,
+    gravity: position,
+    backgroundColor: backgroundColor,
+    textColor: textColor,
+    fontSize: fontSize,
+  );
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -47,45 +65,13 @@ class _LoginPageState extends State<LoginPage> {
         final user = FirebaseAuth.instance.currentUser;
         if (user != null && user.emailVerified) {
           // Show success toast and navigate to home page
-          DelightToastBar(
-            builder: (context) => const ToastCard(
-              leading: Icon(
-                Icons.check_circle,
-                size: 28,
-                color: Colors.white,
-              ),
-              title: Text(
-                "Login Successful! Welcome",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ).show(context);
+          showToast(message: "Login Successful! Welcome");
 
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const HomePage()));
         } else {
           // Show message to verify email
-          DelightToastBar(
-            builder: (context) => const ToastCard(
-              leading: Icon(
-                Icons.error,
-                size: 28,
-                color: Colors.white,
-              ),
-              title: Text(
-                'Please verify your email to log in.',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ).show(context);
+          showToast(message: 'Please verify your email to log in.');
 
           // Optionally, resend verification email
           try {
@@ -103,41 +89,11 @@ class _LoginPageState extends State<LoginPage> {
           errorMessage = 'Wrong password provided for that user.';
         }
 
-        DelightToastBar(
-          builder: (context) => ToastCard(
-            leading: const Icon(
-              Icons.error,
-              size: 28,
-              color: Colors.white,
-            ),
-            title: Text(
-              errorMessage,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ).show(context);
+        showToast(message: errorMessage);
       } catch (e) {
-        DelightToastBar(
-          builder: (context) => const ToastCard(
-            leading: Icon(
-              Icons.error,
-              size: 28,
-              color: Colors.white,
-            ),
-            title: Text(
-              'An unexpected error occurred. Please check credentials and try again.',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ).show(context);
+        showToast(
+            message:
+                'An unexpected error occurred. Please check credentials and try again.');
       } finally {
         setState(() {
           loading = false;
@@ -152,7 +108,6 @@ class _LoginPageState extends State<LoginPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // text + image
             const SizedBox(
               height: 40,
             ),
@@ -161,7 +116,6 @@ class _LoginPageState extends State<LoginPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //text
                   const Flexible(
                     child: Text(
                       'Already have an Account?',
@@ -169,20 +123,14 @@ class _LoginPageState extends State<LoginPage> {
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  // image
-
                   Image.asset('assets/images/login.png',
                       height: 200, width: 200),
                 ],
               ),
             ),
-
-            // input fields
-
             const SizedBox(
               height: 20,
             ),
-
             Form(
               key: _formKey,
               child: Column(
@@ -249,13 +197,9 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                   ),
-
-                  // login button
-
                   const SizedBox(
                     height: 20,
                   ),
-
                   loading
                       ? const CircularProgressIndicator(
                           color: Color(0xFF11CEC4))
@@ -279,13 +223,9 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-
-            // new user, register now cliclable text
-
             const SizedBox(
               height: 20,
             ),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -300,13 +240,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ],
             ),
-
-            // other login options, google and linkedin providers
-
             const SizedBox(
               height: 20,
             ),
-
             const Padding(
               padding: EdgeInsets.only(left: 30, right: 30),
               child: Row(
@@ -333,11 +269,9 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-
             const SizedBox(
               height: 20,
             ),
-
             Row(
               children: [
                 Expanded(
@@ -381,10 +315,8 @@ class _LoginPageState extends State<LoginPage> {
                           topLeft: Radius.circular(100),
                           bottomLeft: Radius.circular(100)),
                     ),
-                    child: const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
+                    child: const Icon(Icons.arrow_forward,
+                        size: 40, color: Colors.white),
                   ),
                 ),
               ],

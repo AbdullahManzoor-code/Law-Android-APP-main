@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/Home/home_page.dart';
+import 'package:law_app/auth/login_page.dart';
 
 class EmailVerificationPage extends StatefulWidget {
   const EmailVerificationPage({super.key});
@@ -24,6 +25,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
       // Check if email is verified
       if (user != null && user.emailVerified) {
         timer.cancel();
+        showToast(message: "Email successfully verified!");
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const HomePage()));
       }

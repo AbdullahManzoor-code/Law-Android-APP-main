@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/auth/authProviders/googleAuth.dart';
+import 'package:law_app/components/toaster.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -56,11 +57,10 @@ class _SignupPageState extends State<SignupPage> {
           // Send email verification
           await user.sendEmailVerification();
 
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(
-                    'Signup Successful! A verification email has been sent to ${user.email}. Please verify your email to continue.')),
+          // Show success message using custom toast
+          showToast(
+            message:
+                'Signup Successful! A verification email has been sent to ${user.email}. Please verify your email to continue.',
           );
 
           // Navigate back to login screen
@@ -75,14 +75,12 @@ class _SignupPageState extends State<SignupPage> {
         } else if (e.code == 'invalid-email') {
           errorMessage = 'The email address is not valid.';
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        showToast(
+          message: errorMessage,
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('An unexpected error occurred. Please try again.'),
-              backgroundColor: Colors.red),
+        showToast(
+          message: 'An unexpected error occurred. Please try again.',
         );
       } finally {
         setState(() {
@@ -123,7 +121,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ),
 
-            // input fileds container
+            // input fields container
 
             Container(
               padding: const EdgeInsets.all(12),
@@ -184,9 +182,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                     ),
-                    // const SizedBox(
-                    //   height: 5,
-                    // ),
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: TextFormField(
@@ -207,9 +202,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                     ),
-                    // const SizedBox(
-                    //   height: 5,
-                    // ),
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: TextFormField(
@@ -349,14 +341,6 @@ class _SignupPageState extends State<SignupPage> {
                         child: Image.asset('assets/images/google.png',
                             height: 50, width: 50),
                       ),
-                      // const SizedBox(
-                      //   width: 20,
-                      // ),
-                      // Image.asset(
-                      //   'assets/images/linkedin.png',
-                      //   height: 50,
-                      //   width: 50,
-                      // ),
                     ],
                   ),
                 )

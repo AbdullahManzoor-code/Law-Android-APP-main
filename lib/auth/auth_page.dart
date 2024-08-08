@@ -26,14 +26,17 @@ class AuthPage extends StatelessWidget {
                 return const EmailVerificationPage(); // Make sure to create this widget
               } else {
                 // Email is verified, go to home page
+                showToast(message: "Login successful!");
                 return const HomePage();
               }
             } else {
               // User is null, show an error message or redirect to login
+              showToast(message: "User data is null. Please try again.");
               return const Center(child: Text('User data is null.'));
             }
           } else if (snapshot.hasError) {
             // Handle error state
+            showToast(message: "An error occurred. Please try again.");
             return const Center(child: Text('An error occurred.'));
           } else {
             // User is not logged in, show login page
