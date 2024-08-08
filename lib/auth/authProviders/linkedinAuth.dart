@@ -65,16 +65,16 @@ class _LinkedInDemoPageState extends State<LinkedInDemoPage> {
                       },
                       onGetUserProfile: (UserSucceededAction linkedInUser) {
                         print('Access token: ${linkedInUser.user.token}');
-                        print('First name: ${linkedInUser.user.firstName}');
-                        print('Last name: ${linkedInUser.user.lastName}');
+                        print('First name: ${linkedInUser.user.name}');
+                        print('Last name: ${linkedInUser.user.familyName}');
 
                         setState(() {
                           user = UserObject(
-                            firstName: linkedInUser.user.firstName.toString(),
-                            lastName: linkedInUser.user.lastName.toString(),
+                            firstName: linkedInUser.user.name.toString(),
+                            lastName: linkedInUser.user.name.toString(),
                             email: linkedInUser.user.email.toString(),
                             profileImageUrl:
-                                linkedInUser.user.profilePicture.toString(),
+                                linkedInUser.user.picture.toString(),
                           );
                           logoutUser = false;
                         });
