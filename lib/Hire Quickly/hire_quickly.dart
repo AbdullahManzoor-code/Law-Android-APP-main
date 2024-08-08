@@ -120,8 +120,8 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                             colors: [
-                              Colors.orange[300]!,
-                              Colors.red[400]!,
+                              Color.fromARGB(255, 153, 206, 215)!,
+                              Color.fromARGB(255, 46, 188, 213)!,
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
@@ -217,24 +217,58 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                                       color: Colors.white,
                                     ),
                                   ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 8),
+                                    child: Center(
+                                      child: Text(
+                                        item['description'],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                             // const SizedBox(
                             //   height: 20,
                             // ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8, right: 8),
-                              child: Center(
-                                child: Text(
-                                  item['description'],
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                            Center(
+                              child: Container(
+                                height: 50,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    shape: BoxShape.rectangle,
+                                    color: Color.fromARGB(255, 4, 103, 122)),
+                                child: TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => FormPage(
+                                            selectedCategory: item['heading'],
+                                            selectedCategoryOption:
+                                                item['title'],
+                                            selectedCategorySubOption:
+                                                item['subTitle'],
+                                            selectedCategorySubOptionName:
+                                                item['option'],
+                                            price: double.parse(item['price']),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "Purchase Now",
+                                      style: TextStyle(color: Colors.white),
+                                    )),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),

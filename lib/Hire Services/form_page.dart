@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/Hire%20Services/pay_now_page.dart';
+import 'package:law_app/auth/login_page.dart';
 import 'package:law_app/components/Email/send_email_emailjs.dart';
 import 'package:dotted_border/dotted_border.dart';
 
@@ -65,6 +66,7 @@ class _FormPageState extends State<FormPage> {
             .any((existingFile) => existingFile.name == file.name)) {
           pickedFiles.add(file);
         }
+        showToast(message: "File Picked");
       }
     });
   }
@@ -83,6 +85,7 @@ class _FormPageState extends State<FormPage> {
 
       setState(() {
         uploadTasks.add(uploadTask);
+        showToast(message: "File Uploaded");
       });
 
       final snapshot = await uploadTask.whenComplete(() {});
@@ -161,23 +164,25 @@ class _FormPageState extends State<FormPage> {
 
         // send email
 
-        sendEmailUsingEmailjs(
-            name: _nameController.text,
-            email: _emailController.text,
-            subject: services,
-            message: _messageController.text,
-            services: widget.selectedCategorySubOptionName);
+        // sendEmailUsingEmailjs(
+        //     name: _nameController.text,
+        //     email: _emailController.text,
+        //     subject: services,
+        //     message: _messageController.text,
+        //     services: widget.selectedCategorySubOptionName);
 
         // Clear the form
-        _nameController.clear();
-        _whatsappController.clear();
-        _messageController.clear();
 
         // Navigate to the pay now page
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => PayNowPage(
+              name: _nameController.text,
+              email: _emailController.text,
+              subject: services,
+              message: _messageController.text,
+              services: widget.selectedCategorySubOptionName,
               heading: widget.selectedCategory,
               title: widget.selectedCategoryOption,
               subTitle: widget.selectedCategorySubOption,
@@ -189,6 +194,9 @@ class _FormPageState extends State<FormPage> {
             ),
           ),
         );
+        _nameController.clear();
+        _whatsappController.clear();
+        _messageController.clear();
       } catch (e) {
         // Handle errors, e.g., show an error message
         ScaffoldMessenger.of(context).showSnackBar(
@@ -591,7 +599,7 @@ class _FormPageState extends State<FormPage> {
                       LinearProgressIndicator(
                         value: progress,
                         backgroundColor: Colors.grey,
-                        color: Colors.green,
+                        color: const Color.fromARGB(255, 76, 167, 175),
                       ),
                       Center(
                         child: Text(

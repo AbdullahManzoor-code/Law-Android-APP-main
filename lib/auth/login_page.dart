@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
             await user?.sendEmailVerification();
           } catch (e) {
             // Handle errors specifically from sendEmailVerification
-            // Optionally, log this error or show a specific message
+            showToast(message: 'Failed to send verification email.');
           }
         }
       } on FirebaseAuthException catch (e) {
@@ -297,6 +297,17 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         },
                         child: Image.asset('assets/images/linkedin.png',
+                            height: 50, width: 50),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LinkedInDemoPage()),
+                          );
+                        },
+                        child: Image.asset('assets/images/github.png',
                             height: 50, width: 50),
                       ),
                     ],

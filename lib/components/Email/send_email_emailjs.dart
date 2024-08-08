@@ -1,11 +1,10 @@
 import 'package:emailjs/emailjs.dart' as emailjs;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:law_app/auth/login_page.dart'; // Import the Fluttertoast package or your custom `showToast` function
 
-const String serviceId = 'service_xdpqrnk';
+const String serviceId = 'service_x8maq5z';
 const String templateId = 'template_b0hrtsu';
-const String publicApiKey = 'alu2bqZ6Bpf9uxXpF';
-const String privateKey = 'DWUehV6BSHbJdpYqVbXve';
+const String publicApiKey = 'ehGeqJsWXVaiLJPjS';
+const String privateKey = 'zAkBrMt8flDzxOa-eH-U1';
 
 Future<bool> sendEmailUsingEmailjs({
   required String name,

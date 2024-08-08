@@ -1,5 +1,6 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:law_app/components/Email/send_email_emailjs.dart';
 import 'color_extension.dart';
 import 'dart:convert';
 
@@ -13,7 +14,11 @@ class PayNowPage extends StatefulWidget {
   final String option;
   final double totalPrice;
   List<String> extraOption;
-
+  final String name;
+  final String email;
+  final String subject;
+  final String message;
+  final String services;
   PayNowPage(
       {Key? key,
       required this.totalPrice,
@@ -21,7 +26,12 @@ class PayNowPage extends StatefulWidget {
       required this.title,
       required this.subTitle,
       required this.option,
-      this.extraOption = const []})
+      this.extraOption = const [],
+      required this.name,
+      required this.email,
+      required this.subject,
+      required this.message,
+      required this.services})
       : super(key: key);
 
   @override
@@ -73,40 +83,52 @@ class _PayNowPageState extends State<PayNowPage> {
   }
 
   Future<void> displayPaymentSheet() async {
-    try {
-      await Stripe.instance.presentPaymentSheet();
-      setState(() {
-        paymentIntentData = null;
-      });
-      Fluttertoast.showToast(
-        msg: "Payment successful",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    } on StripeException catch (e) {
-      print('StripeException: $e');
-      Fluttertoast.showToast(
-        msg: "Payment failed",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    } catch (e) {
-      print('Exception: $e');
-      Fluttertoast.showToast(
-        msg: "Payment failed",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    }
+    // try {
+    await Stripe.instance.presentPaymentSheet();
+    setState(() {
+      paymentIntentData = null;
+    });
+    Fluttertoast.showToast(
+      msg: "Payment successful",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+    sendEmailUsingEmailjs(
+        name: widget.name,
+        email: widget.email,
+        subject: widget.subject,
+        message: widget.message);
+
+    // sendEmailUsingEmailjs(
+    //     name: _nameController.text,
+    //     email: _emailController.text,
+    //     subject: services,
+    //     message: _messageController.text,
+    //     services: widget.selectedCategorySubOptionName);
+    // } on StripeException catch (e) {
+    //   print('StripeException: $e');
+    //   Fluttertoast.showToast(
+    //     msg: "Payment failed",
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0,
+    //   );
+    // } catch (e) {
+    //   print('Exception: $e');
+    //   Fluttertoast.showToast(
+    //     msg: "Payment failed",
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0,
+    //   );
+    // }
   }
 
   Future<Map<String, dynamic>> createPaymentIntent(

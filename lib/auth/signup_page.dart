@@ -52,6 +52,8 @@ class _SignupPageState extends State<SignupPage> {
               .set({
             'name': _nameController.text,
             'phone': _phoneController.text,
+            'email': _emailController.text, // Save email as well
+            'createdAt': FieldValue.serverTimestamp(), // Save the timestamp
           });
 
           // Send email verification
@@ -74,6 +76,11 @@ class _SignupPageState extends State<SignupPage> {
           errorMessage = 'An account already exists for that email.';
         } else if (e.code == 'invalid-email') {
           errorMessage = 'The email address is not valid.';
+        } else if (e.code == 'operation-not-allowed') {
+          errorMessage = 'Email/password accounts are not enabled.';
+        } else if (e.code == 'network-request-failed') {
+          errorMessage =
+              'Network error occurred. Please check your connection.';
         }
         showToast(
           message: errorMessage,
@@ -87,6 +94,10 @@ class _SignupPageState extends State<SignupPage> {
           loading = false;
         });
       }
+    } else {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -114,15 +125,12 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                   // image
-
                   Image.asset('assets/images/signup.png',
                       height: 200, width: 200),
                 ],
               ),
             ),
-
             // input fields container
-
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -274,13 +282,10 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
             ),
-
             // other options
-
             const SizedBox(
               height: 20,
             ),
-
             const Padding(
               padding: EdgeInsets.only(left: 30, right: 30),
               child: Row(
@@ -308,7 +313,6 @@ class _SignupPageState extends State<SignupPage> {
                 ],
               ),
             ),
-
             Row(
               children: [
                 GestureDetector(

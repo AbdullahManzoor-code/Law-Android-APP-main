@@ -16,12 +16,13 @@ Future<void> sendEmail({
     final response = await http.post(
       uri,
       headers: {
+        'origin': 'http:localhost',
         'Content-Type': 'application/json',
       },
-      body: json.encode({
-        'service_id': 'service_y6ebq5q',
+      body: jsonEncode({
+        'service_id': 'service_x8maq5z',
         'template_id': 'template_b0hrtsu',
-        'user_id': 'alu2bqZ6Bpf9uxXpF',
+        'user_id': 'ehGeqJsWXVaiLJPjS',
         'template_params': {
           'user_name': name,
           'user_email': email,
