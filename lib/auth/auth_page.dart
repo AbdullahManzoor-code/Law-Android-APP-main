@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:law_app/Home/home_page.dart';
 import 'package:law_app/auth/email_verification_page.dart';
 import 'package:law_app/auth/login_page.dart';
+import 'package:law_app/components/toaster.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});

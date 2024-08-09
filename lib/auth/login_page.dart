@@ -1,29 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/Home/home_page.dart';
+import 'package:law_app/auth/authProviders/githubauth.dart';
 import 'package:law_app/auth/authProviders/googleAuth.dart';
 import 'package:law_app/auth/authProviders/linkedinAuth.dart';
 import 'package:law_app/auth/signup_page.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-// Your custom showToast function
-void showToast({
-  required String message,
-  ToastGravity position = ToastGravity.BOTTOM,
-  Toast length = Toast.LENGTH_SHORT,
-  Color backgroundColor = const Color.fromARGB(255, 54, 160, 160),
-  Color textColor = Colors.white,
-  double fontSize = 16.0,
-}) {
-  Fluttertoast.showToast(
-    msg: message,
-    toastLength: length,
-    gravity: position,
-    backgroundColor: backgroundColor,
-    textColor: textColor,
-    fontSize: fontSize,
-  );
-}
+import 'package:law_app/components/toaster.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -300,12 +282,20 @@ class _LoginPageState extends State<LoginPage> {
                             height: 50, width: 50),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LinkedInDemoPage()),
-                          );
+                        onTap: () async {
+                          try {
+                            UserCredential userCredential =
+                                await signin_withgithub();
+                            if (context.mounted) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage()));
+                            }
+                          } catch (e) {
+                            print("qqqqqqqqqqqqqqqqqqqqqqqqqqq$e");
+                            showToast(message: e.toString());
+                          }
                         },
                         child: Image.asset('assets/images/github.png',
                             height: 50, width: 50),

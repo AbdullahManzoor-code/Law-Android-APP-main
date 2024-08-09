@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:law_app/auth/login_page.dart'; // Ensure this is imported or your custom `showToast` function
+import 'package:law_app/auth/login_page.dart';
+import 'package:law_app/components/toaster.dart'; // Ensure this is imported or your custom `showToast` function
 
 Future<void> sendEmail({
   required String name,

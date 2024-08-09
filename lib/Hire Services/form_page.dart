@@ -9,6 +9,7 @@ import 'package:law_app/Hire%20Services/pay_now_page.dart';
 import 'package:law_app/auth/login_page.dart';
 import 'package:law_app/components/Email/send_email_emailjs.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:law_app/components/toaster.dart';
 
 class FormPage extends StatefulWidget {
   final String selectedCategory;
@@ -66,7 +67,9 @@ class _FormPageState extends State<FormPage> {
             .any((existingFile) => existingFile.name == file.name)) {
           pickedFiles.add(file);
         }
-        showToast(message: "File Picked");
+        showToast(
+          message: "File Picked ${file.name}",
+        );
       }
     });
   }

@@ -1,5 +1,6 @@
 import 'package:emailjs/emailjs.dart' as emailjs;
-import 'package:law_app/auth/login_page.dart'; // Import the Fluttertoast package or your custom `showToast` function
+import 'package:law_app/auth/login_page.dart';
+import 'package:law_app/components/toaster.dart'; // Import the Fluttertoast package or your custom `showToast` function
 
 const String serviceId = 'service_x8maq5z';
 const String templateId = 'template_b0hrtsu';

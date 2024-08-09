@@ -58,6 +58,7 @@ dependencies:
   flutter_web_auth: ^0.5.0
   fluttertoast: ^8.2.6
   github: ^9.24.0
+  github_signin_aksoyhlc: ^0.0.4
 
 dev_dependencies:
   flutter_test:
