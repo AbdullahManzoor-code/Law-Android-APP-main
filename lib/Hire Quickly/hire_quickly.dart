@@ -17,6 +17,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
 
   final List _products = [
     {
+      'Type': 'BASIC',
       'heading': 'Consumer Contracts',
       'title': 'Travel',
       'subTitle': 'Air Plane',
@@ -27,6 +28,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
       'color': const Color.fromRGBO(0, 204, 204, 1.0),
     },
     {
+      'Type': 'STANDARD',
       'heading': 'Consumer Contracts',
       'title': 'Hotel',
       'subTitle': 'Reservation',
@@ -37,6 +39,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
       'color': const Color.fromRGBO(159, 129, 247, 1.0),
     },
     {
+      'Type': 'PERMIUM',
       'heading': 'Administrative',
       'title': 'Immigration',
       'subTitle': 'Residence Foreigners',
@@ -160,7 +163,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                                     height: 20,
                                   ),
                                   Text(
-                                    item['heading'],
+                                    item['Type'],
                                     style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -251,7 +254,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => FormPage(
-                                            selectedCategory: item['heading'],
+                                            selectedCategory: item['Type'],
                                             selectedCategoryOption:
                                                 item['title'],
                                             selectedCategorySubOption:

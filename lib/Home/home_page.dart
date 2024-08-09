@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+import 'package:law_app/Google%20meetup/google_meetup.dart';
 import 'package:law_app/Hire%20Quickly/hire_quickly.dart';
 import 'package:law_app/Hire%20Services/hire_services.dart';
 import 'package:law_app/Orders/user_orders_page.dart';
+import 'package:law_app/text_editor/text%20_editor.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -59,8 +63,11 @@ class HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    title = "Hire Services";
-    _selectedWidget = const HireServices();
+    // title = "Hire Services";
+    // _selectedWidget = const HireServices();
+    // selectedMenuItem = title;
+    title = "Text Editor";
+    _selectedWidget = ScheduleMeeting();
     selectedMenuItem = title;
 
     // Initialize the AnimationController
@@ -81,12 +88,12 @@ class HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: SliderDrawer(
-        appBar: const SliderAppBar(
+        appBar: SliderAppBar(
           appBarColor: Colors.white,
           title: Text(
-            '',
+            title,
             style: TextStyle(
-              // fontSize: 22,
+              fontSize: 22,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -118,9 +125,7 @@ class HomePageState extends State<HomePage>
                 );
                 break;
               case 'Text Editor':
-                _selectedWidget = Center(
-                  child: Text(title),
-                );
+                _selectedWidget = TextEditorScreen();
                 break;
               case 'Profile':
                 _selectedWidget = Center(
