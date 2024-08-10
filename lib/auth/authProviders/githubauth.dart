@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 //
+// ignore: non_constant_identifier_names
 Future<UserCredential> signin_withgithub() async {
   GithubAuthProvider githubAuthProvider = GithubAuthProvider();
   return await FirebaseAuth.instance.signInWithProvider(githubAuthProvider);

@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:law_app/Hire%20Services/form_page.dart';
 
 class HireQuicklyPage extends StatefulWidget {
+  // ignore: use_super_parameters
   const HireQuicklyPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HireQuicklyPageState createState() => _HireQuicklyPageState();
 }
 
 class _HireQuicklyPageState extends State<HireQuicklyPage> {
+  // ignore: unused_field
   int _current = 0;
   dynamic _selectedIndex = {};
 
@@ -80,12 +83,12 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: const Text(
-          'Hire Quickly',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
+        // title: const Text(
+        //   'Hire Quickly',
+        //   style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        // ),
       ),
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         height: double.infinity,
         child: CarouselSlider(
@@ -119,12 +122,12 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           // color: item['color'],
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                             colors: [
-                              Color.fromARGB(255, 153, 206, 215)!,
-                              Color.fromARGB(255, 46, 188, 213)!,
+                              Color.fromARGB(255, 153, 206, 215),
+                              Color.fromARGB(255, 46, 188, 213),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
@@ -247,7 +250,8 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(25),
                                     shape: BoxShape.rectangle,
-                                    color: Color.fromARGB(255, 4, 103, 122)),
+                                    color:
+                                        const Color.fromARGB(255, 4, 103, 122)),
                                 child: TextButton(
                                     onPressed: () {
                                       Navigator.push(
@@ -266,7 +270,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                                         ),
                                       );
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       "Purchase Now",
                                       style: TextStyle(color: Colors.white),
                                     )),

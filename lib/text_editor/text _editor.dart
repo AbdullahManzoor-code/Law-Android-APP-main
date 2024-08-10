@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:flutter_quill_to_pdf/flutter_quill_to_pdf.dart';
 import 'package:law_app/components/toaster.dart';
@@ -82,13 +83,13 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
             FloatingActionButton(
               onPressed: saveAndPrintPDF,
               heroTag: 'printBtn',
-              child: Icon(Icons.print),
+              child: const Icon(Icons.print),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             FloatingActionButton(
               onPressed: _saveAndExportPDF,
               heroTag: 'shareBtn',
-              child: Icon(Icons.share),
+              child: const Icon(Icons.share),
             ),
           ],
         ),
@@ -98,7 +99,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
             children: [
               QuillToolbar.simple(
                 controller: _controller,
-                configurations: QuillSimpleToolbarConfigurations(
+                configurations: const QuillSimpleToolbarConfigurations(
                   toolbarSectionSpacing: 5,
                 ),
               ),
@@ -130,7 +131,8 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
                       controller: _controller,
                       scrollController: ScrollController(),
                       focusNode: _focusNode,
-                      configurations: QuillEditorConfigurations(minHeight: 500),
+                      configurations:
+                          const QuillEditorConfigurations(minHeight: 500),
                     ),
                   ),
                 ),

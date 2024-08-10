@@ -1,5 +1,4 @@
 import 'package:emailjs/emailjs.dart' as emailjs;
-import 'package:law_app/auth/login_page.dart';
 import 'package:law_app/components/toaster.dart'; // Import the Fluttertoast package or your custom `showToast` function
 
 const String serviceId = 'service_x8maq5z';
@@ -23,8 +22,6 @@ Future<bool> sendEmailUsingEmailjs({
       'service': services ?? '',
     };
 
-    print('Sending email with params: $templateParams');
-
     await emailjs.send(
       serviceId,
       templateId,
@@ -38,10 +35,8 @@ Future<bool> sendEmailUsingEmailjs({
   } catch (error) {
     // Improved error handling
     if (error is emailjs.EmailJSResponseStatus) {
-      print('EmailJS Error: ${error.status} - ${error.text}');
       showToast(message: 'Failed to send email: ${error.text}');
     } else {
-      print('Unexpected Error: ${error.toString()}');
       showToast(message: 'Unexpected error occurred: ${error.toString()}');
     }
     return false;

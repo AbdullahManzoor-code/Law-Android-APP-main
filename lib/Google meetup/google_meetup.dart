@@ -29,24 +29,24 @@ class ScheduleMeeting extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 8,
-                  offset: const Offset(0, 4), // Shadow position
-                ),
-              ],
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.black.withOpacity(0.1),
+              //     spreadRadius: 2,
+              //     blurRadius: 8,
+              //     offset: const Offset(0, 4), // Shadow position
+              //   ),
+              // ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Background image
                   Image.asset(
                     'assets/images/Google_Meetup.png', // Replace with your image URL
                     fit: BoxFit.cover,
-                    color: Colors.black.withOpacity(0.3), // Dark overlay
                     colorBlendMode: BlendMode.darken,
                   ),
                   // Content
@@ -61,7 +61,7 @@ class ScheduleMeeting extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                             textAlign: TextAlign.center,
                           ),

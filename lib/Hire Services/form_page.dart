@@ -6,12 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/Hire%20Services/pay_now_page.dart';
-import 'package:law_app/auth/login_page.dart';
-import 'package:law_app/components/Email/send_email_emailjs.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:law_app/components/toaster.dart';
 import 'package:country_picker/country_picker.dart';
 
+// ignore: must_be_immutable
 class FormPage extends StatefulWidget {
   final String selectedCategory;
   final String selectedCategoryOption;
@@ -20,6 +19,7 @@ class FormPage extends StatefulWidget {
   final double price;
   List<String> selectedCategorySubOptionAllName;
 
+  // ignore: use_super_parameters
   FormPage({
     Key? key,
     required this.selectedCategory,

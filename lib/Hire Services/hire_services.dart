@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:law_app/Hire%20Services/form_page.dart';
-import 'package:law_app/Hire%20Services/sub_options_details.dart';
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:accordion/accordion.dart';
 import 'package:custom_accordion/custom_accordion.dart';

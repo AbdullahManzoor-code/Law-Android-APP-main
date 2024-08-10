@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
           // Show success toast and navigate to home page
           showToast(message: "Login Successful! Welcome");
 
+          // ignore: use_build_context_synchronously
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const HomePage()));
         } else {
@@ -275,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LinkedInDemoPage()),
+                                builder: (context) => const LinkedInDemoPage()),
                           );
                         },
                         child: Image.asset('assets/images/linkedin.png',
@@ -286,14 +287,21 @@ class _LoginPageState extends State<LoginPage> {
                           try {
                             UserCredential userCredential =
                                 await signin_withgithub();
-                            if (context.mounted) {
+                            // if (context.mounted) {
+                            //   Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //           builder: (context) => HomePage()));
+                            // }
+                            // ignore: unnecessary_null_comparison
+                            if (userCredential != null) {
                               Navigator.push(
+                                  // ignore: use_build_context_synchronously
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => HomePage()));
+                                      builder: (context) => const HomePage()));
                             }
                           } catch (e) {
-                            print("qqqqqqqqqqqqqqqqqqqqqqqqqqq$e");
                             showToast(message: e.toString());
                           }
                         },

@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 
+// ignore: must_be_immutable
 class PayNowPage extends StatefulWidget {
   final String heading;
   final String title;
@@ -19,6 +20,7 @@ class PayNowPage extends StatefulWidget {
   final String subject;
   final String message;
   final String services;
+  // ignore: use_super_parameters
   PayNowPage(
       {Key? key,
       required this.totalPrice,
