@@ -1,3 +1,4 @@
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/components/Email/send_email_emailjs.dart';
@@ -99,6 +100,18 @@ class _PayNowPageState extends State<PayNowPage> {
       fontSize: 16.0,
     );
     sendEmailUsingEmailjs(
+        isadmin: true,
+
+        ///sending to admin
+        name: widget.name,
+        email: widget.email,
+        subject: widget.subject,
+        message: widget.message);
+
+    sendEmailUsingEmailjs(
+        isadmin: false,
+
+        ///sending to customer
         name: widget.name,
         email: widget.email,
         subject: widget.subject,
@@ -160,6 +173,56 @@ class _PayNowPageState extends State<PayNowPage> {
   String calculateAmount(String amount) {
     final calculatedAmount = (double.parse(amount) * 100).toInt().toString();
     return calculatedAmount;
+  }
+
+  Future<void> sendPurchaseConfirmationEmail({
+    required String userName,
+    required String service,
+    required String userMessage,
+    required String userEmail,
+    required String userSubject,
+  }) async {
+    final Email email = Email(
+      body: '''
+Dear $userName,
+
+Thank you for your recent purchase! We are pleased to confirm that you have successfully purchased the following service:
+
+---
+
+**Service Purchased:**
+$service
+
+**Message from You:**
+"$userMessage"
+
+---
+
+We appreciate your trust in our services and look forward to assisting you. 
+
+If you have any questions or need further assistance, please feel free to contact us.
+
+---
+
+Best regards,
+
+The [Your Company Name] Team  
+Email: $userEmail  
+Subject: $userSubject
+
+---
+
+Note: This email serves as confirmation of your recent service purchase. Please keep this information for your records.
+''',
+      subject: 'Confirmation of Your Service Purchase',
+      recipients: [userEmail],
+      cc: [],
+      bcc: [],
+      attachmentPaths: [],
+      isHTML: false,
+    );
+
+    await FlutterEmailSender.send(email);
   }
 
   @override

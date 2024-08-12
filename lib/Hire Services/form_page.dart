@@ -121,6 +121,9 @@ class _FormPageState extends State<FormPage> {
   void dispose() {
     // TODO: implement dispose
     phonenumbercontroller.dispose();
+    _nameController.dispose();
+
+    _messageController.dispose();
     super.dispose();
   }
 
@@ -207,10 +210,10 @@ class _FormPageState extends State<FormPage> {
           context,
           MaterialPageRoute(
             builder: (context) => PayNowPage(
-              name: _nameController.text,
-              email: _emailController.text,
+              name: _nameController.text.trim(),
+              email: _emailController.text.trim(),
               subject: services,
-              message: _messageController.text,
+              message: _messageController.text.trim(),
               services: widget.selectedCategorySubOptionName,
               heading: widget.selectedCategory,
               title: widget.selectedCategoryOption,
@@ -223,9 +226,6 @@ class _FormPageState extends State<FormPage> {
             ),
           ),
         );
-        _nameController.clear();
-        _whatsappController.clear();
-        _messageController.clear();
       } catch (e) {
         // Handle errors, e.g., show an error message
         ScaffoldMessenger.of(context).showSnackBar(

@@ -68,8 +68,17 @@ dependencies:
   googleapis_auth: ^1.6.0
   googleapis: 13.2.0
   uuid: ^4.4.2
+  image_picker: ^1.0.7
   country_picker: ^2.0.26
+  flutter_email_sender: ^6.0.3
+  
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/fonts/icon.png"
+  min_sdk_android: 21
   flutter_test:
     sdk: flutter
 

@@ -9,6 +9,8 @@ import 'package:law_app/Hire%20Services/hire_services.dart';
 import 'package:law_app/Orders/user_orders_page.dart';
 import 'package:law_app/text_editor/text%20_editor.dart';
 
+import '../profille/profile.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -22,8 +24,8 @@ class HomePageState extends State<HomePage>
       GlobalKey<SliderDrawerState>();
   late String title;
 
-  late Widget _selectedWidget;
-  // HomePageState() : _selectedWidget = _AuthorList(); // Initialize with the widget
+  static late Widget selectedWidget;
+  // HomePageState() : selectedWidget = _AuthorList(); // Initialize with the widget
 
   late AnimationController _controller;
 
@@ -49,9 +51,8 @@ class HomePageState extends State<HomePage>
                 child: const Text("Cancel"),
               ),
               TextButton(
-                onPressed: () {
-                  signUserOut();
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
                 },
                 child: const Text("Logout"),
               ),
@@ -64,10 +65,10 @@ class HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     title = "Hire Services";
-    _selectedWidget = const HireServices();
+    selectedWidget = const HireServices();
     selectedMenuItem = title;
     // title = "Text Editor";
-    // _selectedWidget = ScheduleMeeting();
+    // selectedWidget = ScheduleMeeting();
     // selectedMenuItem = title;
 
     // Initialize the AnimationController
@@ -86,59 +87,62 @@ class HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SliderDrawer(
-          appBar: SliderAppBar(
-            appBarColor: Colors.white,
-            title: Text(
-              title,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
+    return Container(
+      color: Colors.black,
+      child: SafeArea(
+        child: Scaffold(
+          body: SliderDrawer(
+            appBar: SliderAppBar(
+              appBarHeight: 60,
+              isTitleCenter: true,
+              appBarColor: Colors.white,
+              title: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-          ),
-          key: _sliderDrawerKey,
-          sliderOpenSize: 179,
-          slider: _SliderView(
-            selectedMenuItem: selectedMenuItem,
-            onItemClick: (title) {
-              _sliderDrawerKey.currentState!.closeSlider();
-              setState(() {
-                this.title = title;
-                selectedMenuItem = title;
-              });
+            key: _sliderDrawerKey,
+            sliderOpenSize: 179,
+            slider: _SliderView(
+              selectedMenuItem: selectedMenuItem,
+              onItemClick: (title) {
+                _sliderDrawerKey.currentState!.closeSlider();
+                setState(() {
+                  this.title = title;
+                  selectedMenuItem = title;
+                });
 
-              switch (title) {
-                case 'Hire Services':
-                  _selectedWidget = const HireServices();
-                  break;
-                case 'Hire Quickly':
-                  _selectedWidget = const HireQuicklyPage();
-                  break;
-                case 'Orders':
-                  _selectedWidget = const OrderPage();
-                  break;
-                case 'ChatBot':
-                  _selectedWidget = ScheduleMeeting();
-                  break;
-                case 'Text Editor':
-                  _selectedWidget = TextEditorScreen();
-                  break;
-                case 'Profile':
-                  _selectedWidget = Center(
-                    child: Text(title),
-                  );
-                  break;
-                case 'LogOut':
-                  logoutDialog(context);
-                  break;
-              }
-            },
+                switch (title) {
+                  case 'Hire Services':
+                    selectedWidget = const HireServices();
+                    break;
+                  case 'Hire Quickly':
+                    selectedWidget = const HireQuicklyPage();
+                    break;
+                  case 'Orders':
+                    selectedWidget = const OrderPage();
+                    break;
+                  case 'ChatBot':
+                    selectedWidget = ScheduleMeeting();
+                    break;
+                  case 'Text Editor':
+                    selectedWidget = TextEditorScreen();
+                    break;
+                  case 'Profile':
+                    selectedWidget = ProfileView();
+                    break;
+                  case 'LogOut':
+                    logoutDialog(context);
+                    break;
+                }
+              },
+            ),
+            // child: _AuthorList(),
+            child: selectedWidget,
           ),
-          // child: _AuthorList(),
-          child: _selectedWidget,
         ),
       ),
     );
