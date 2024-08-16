@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:law_app/Orders/user_orders_page.dart';
 import 'package:law_app/components/common/round_button.dart';
 import 'package:law_app/components/common/round_textfield.dart';
-import 'package:law_app/components/common/uploadtask.dart';
 import 'package:law_app/components/toaster.dart';
 // import 'package:image_picker/image_picker.dart' as imgg;
 
@@ -30,6 +29,12 @@ class _ProfileViewState extends State<ProfileView> {
   TextEditingController txtPassword = TextEditingController();
   TextEditingController txtConfirmPassword = TextEditingController();
 
+  var name;
+
+  var email;
+
+  var moblies;
+
   Future<void> pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
@@ -37,18 +42,15 @@ class _ProfileViewState extends State<ProfileView> {
 
     setState(() {
       image = File(pickedFile.path);
-      showToast(message: "Image Selected: ${pickedFile.name}");
     });
-    if (image != null) {
-      storeToFirebase(image, user!.uid);
-    }
   }
 
   Future<void> storeToFirebase(File? imageFile, String userId) async {
-    if (imageFile == null) return showToast(message: "image is aailablae");
+    if (imageFile == null) return showToast(message: "Image is not selected");
 
     try {
-      final ref = FirebaseStorage.instance.ref().child('$userId/image');
+      final ref =
+          FirebaseStorage.instance.ref().child('$userId/image/profilepic');
       final uploadTask = ref.putFile(imageFile);
 
       final snapshot = await uploadTask.whenComplete(() {});
@@ -56,11 +58,68 @@ class _ProfileViewState extends State<ProfileView> {
 
       await FirebaseAuth.instance.currentUser?.updatePhotoURL(downloadUrl);
 
+      // await FirebaseFirestore.instance
+      //     .collection('users')
+      //     .doc(userId)
+      //     .update({'photoURL': downloadUrl}); // Update photo URL in Firestore
+
       setState(() {
         showToast(message: "Profile Image Updated Successfully");
       });
     } catch (e) {
       showToast(message: "Failed to Upload Image: $e");
+    }
+  }
+
+  Future<void> saveProfile() async {
+    if (user != null) {
+      final userId = user!.uid;
+
+      // Update display name
+      if (txtName.text.isNotEmpty) {
+        await user!.updateDisplayName(txtName.text.trim());
+      }
+
+      // Update Firestore database
+      await FirebaseFirestore.instance.collection('users').doc(userId).update(
+        {
+          txtName.text != null ? 'name' : txtName.text.trim(): null,
+          txtMobile.text != null ? 'phone' : txtMobile.text.trim(): null,
+        },
+      ); // Use merge to update fields selectively
+
+      showToast(message: "Profile Updated Successfully");
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getProfileData();
+    super.initState();
+  }
+
+  Future<void> getProfileData() async {
+    if (user != null) {
+      final userId = user!.uid;
+      try {
+        DocumentSnapshot doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .get();
+
+        if (doc.exists) {
+          setState(() {
+            name = doc['name'] ?? 'null';
+            email = doc['email'] ?? 'null';
+            moblies = doc['phone'] ?? 'null';
+          });
+        } else {
+          showToast(message: "No Profile Data Found");
+        }
+      } catch (e) {
+        showToast(message: "Failed to Fetch Profile Data: $e");
+      }
     }
   }
 
@@ -109,7 +168,7 @@ class _ProfileViewState extends State<ProfileView> {
                 borderRadius: BorderRadius.circular(50),
               ),
               alignment: Alignment.center,
-              child: user?.photoURL != null
+              child: image == null && user?.photoURL != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(50),
                       child: Image.network(
@@ -177,7 +236,7 @@ class _ProfileViewState extends State<ProfileView> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               child: RoundTitleTextfield(
                 title: "Mobile No",
-                hintText: user?.phoneNumber ?? "Enter Mobile No",
+                hintText: moblies ?? "Enter Mobile No",
                 controller: txtMobile,
                 keyboardType: TextInputType.phone,
               ),
@@ -207,6 +266,12 @@ class _ProfileViewState extends State<ProfileView> {
               child: RoundButton(
                 title: "Save",
                 onPressed: () {
+                  if (image != null) {
+                    storeToFirebase(image, user!.uid);
+                  }
+                  if (txtName.text != null || txtMobile.text != null) {
+                    saveProfile();
+                  }
                   // Implement save functionality here
                 },
               ),

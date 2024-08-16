@@ -2,6 +2,42 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/Hire%20Services/form_page.dart';
 
+final List products = [
+  {
+    'Type': 'BASIC',
+    'heading': 'Consumer Contracts',
+    'title': 'Travel',
+    'subTitle': 'Air Plane',
+    'option': 'Delay',
+    'price': '100',
+    'description':
+        'Compensation for flight delays, including reimbursement for expenses incurred due to the delay.',
+    'color': const Color.fromRGBO(0, 204, 204, 1.0),
+  },
+  {
+    'Type': 'STANDARD',
+    'heading': 'Consumer Contracts',
+    'title': 'Hotel',
+    'subTitle': 'Reservation',
+    'option': 'Cancelled',
+    'price': '200',
+    'description':
+        'Coverage for hotel reservation cancellations, including refunds and compensation for inconvenience.',
+    'color': const Color.fromRGBO(159, 129, 247, 1.0),
+  },
+  {
+    'Type': 'PERMIUM',
+    'heading': 'Administrative',
+    'title': 'Immigration',
+    'subTitle': 'Residence Foreigners',
+    'option': 'Inadequate compensation',
+    'price': '300',
+    'description':
+        'Legal assistance for inadequate compensation claims related to residence permits for foreigners.',
+    'color': const Color.fromRGBO(249, 171, 0, 1.0),
+  },
+];
+
 class HireQuicklyPage extends StatefulWidget {
   // ignore: use_super_parameters
   const HireQuicklyPage({Key? key}) : super(key: key);
@@ -17,42 +53,6 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
   dynamic _selectedIndex = {};
 
   final CarouselController _carouselController = CarouselController();
-
-  final List _products = [
-    {
-      'Type': 'BASIC',
-      'heading': 'Consumer Contracts',
-      'title': 'Travel',
-      'subTitle': 'Air Plane',
-      'option': 'Delay',
-      'price': '100',
-      'description':
-          'Compensation for flight delays, including reimbursement for expenses incurred due to the delay.',
-      'color': const Color.fromRGBO(0, 204, 204, 1.0),
-    },
-    {
-      'Type': 'STANDARD',
-      'heading': 'Consumer Contracts',
-      'title': 'Hotel',
-      'subTitle': 'Reservation',
-      'option': 'Cancelled',
-      'price': '200',
-      'description':
-          'Coverage for hotel reservation cancellations, including refunds and compensation for inconvenience.',
-      'color': const Color.fromRGBO(159, 129, 247, 1.0),
-    },
-    {
-      'Type': 'PERMIUM',
-      'heading': 'Administrative',
-      'title': 'Immigration',
-      'subTitle': 'Residence Foreigners',
-      'option': 'Inadequate compensation',
-      'price': '300',
-      'description':
-          'Legal assistance for inadequate compensation claims related to residence permits for foreigners.',
-      'color': const Color.fromRGBO(249, 171, 0, 1.0),
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                     _current = index;
                   });
                 }),
-            items: _products.map((item) {
+            items: products.map((item) {
               return Builder(
                 builder: (BuildContext context) {
                   return GestureDetector(

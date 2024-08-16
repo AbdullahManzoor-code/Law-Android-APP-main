@@ -1,7 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis/androidenterprise/v1.dart';
+import 'package:law_app/Hire%20Quickly/hire_quickly.dart';
 import 'package:law_app/components/Email/send_email_emailjs.dart';
+import 'package:law_app/components/toaster.dart';
+import 'package:law_app/receipt/model/customer.dart';
+import 'package:law_app/receipt/model/invoice.dart';
+import 'package:law_app/receipt/model/supplier.dart';
+import 'package:open_file/open_file.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
+import 'package:share_plus/share_plus.dart';
+import '../receipt/api/pdf_api.dart';
+import '../receipt/api/pdf_invoice_api.dart';
 import 'color_extension.dart';
 import 'dart:convert';
 
@@ -52,6 +67,10 @@ class _PayNowPageState extends State<PayNowPage> {
   String deliveryEmail = "";
   Map<String, dynamic>? paymentIntentData;
 
+  bool isshowbutton = false;
+
+  late File pdfFile;
+
   @override
   void initState() {
     super.initState();
@@ -86,64 +105,83 @@ class _PayNowPageState extends State<PayNowPage> {
   }
 
   Future<void> displayPaymentSheet() async {
-    // try {
-    await Stripe.instance.presentPaymentSheet();
-    setState(() {
-      paymentIntentData = null;
-    });
-    Fluttertoast.showToast(
-      msg: "Payment successful",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
-    sendEmailUsingEmailjs(
-        isadmin: true,
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      setState(() {
+        paymentIntentData = null;
+      });
+      Fluttertoast.showToast(
+        msg: "Payment successful",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      pdfgent();
+      // try {
+      //   final Email email = Email(
+      //     body: 'Email body',
+      //     subject: widget.subject,
+      //     recipients: [widget.email],
+      //     cc: ['cc@example.com'],
+      //     bcc: ['bcc@example.com'],
+      //     attachmentPaths: [pdfFile.path],
+      //     isHTML: false,
+      //   );
 
-        ///sending to admin
-        name: widget.name,
-        email: widget.email,
-        subject: widget.subject,
-        message: widget.message);
+      //   await FlutterEmailSender.send(email);
+      // } catch (e) {
+      //   showToast(message: "$e this scenod eamil");
+      // }
 
-    sendEmailUsingEmailjs(
-        isadmin: false,
+      sendEmailUsingEmailjs(
+          isadmin: true,
 
-        ///sending to customer
-        name: widget.name,
-        email: widget.email,
-        subject: widget.subject,
-        message: widget.message);
+          ///sending to admin
+          name: widget.name,
+          email: widget.email,
+          subject: widget.subject,
+          message: widget.message,
+          pdfAttachment: pdfFile);
 
-    // sendEmailUsingEmailjs(
-    //     name: _nameController.text,
-    //     email: _emailController.text,
-    //     subject: services,
-    //     message: _messageController.text,
-    //     services: widget.selectedCategorySubOptionName);
-    // } on StripeException catch (e) {
-    //   print('StripeException: $e');
-    //   Fluttertoast.showToast(
-    //     msg: "Payment failed",
-    //     toastLength: Toast.LENGTH_SHORT,
-    //     gravity: ToastGravity.BOTTOM,
-    //     backgroundColor: Colors.red,
-    //     textColor: Colors.white,
-    //     fontSize: 16.0,
-    //   );
-    // } catch (e) {
-    //   print('Exception: $e');
-    //   Fluttertoast.showToast(
-    //     msg: "Payment failed",
-    //     toastLength: Toast.LENGTH_SHORT,
-    //     gravity: ToastGravity.BOTTOM,
-    //     backgroundColor: Colors.red,
-    //     textColor: Colors.white,
-    //     fontSize: 16.0,
-    //   );
-    // }
+      sendEmailUsingEmailjs(
+          isadmin: false,
+
+          ///sending to customer
+          name: widget.name,
+          email: widget.email,
+          subject: widget.subject,
+          message: widget.message,
+          pdfAttachment: pdfFile);
+
+      // sendEmailUsingEmailjs(
+      //     name: _nameController.text,
+      //     email: _emailController.text,
+      //     subject: services,
+      //     message: _messageController.text,
+      //     services: widget.selectedCategorySubOptionName);
+      // } on StripeException catch (e) {
+      //   print('StripeException: $e');
+      //   Fluttertoast.showToast(
+      //     msg: "Payment failed",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     backgroundColor: Colors.red,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0,
+      //   );
+    } catch (e) {
+      print('Exception: $e');
+      Fluttertoast.showToast(
+        msg: "Payment failed",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
   }
 
   Future<Map<String, dynamic>> createPaymentIntent(
@@ -175,54 +213,142 @@ class _PayNowPageState extends State<PayNowPage> {
     return calculatedAmount;
   }
 
-  Future<void> sendPurchaseConfirmationEmail({
-    required String userName,
-    required String service,
-    required String userMessage,
-    required String userEmail,
-    required String userSubject,
-  }) async {
-    final Email email = Email(
-      body: '''
-Dear $userName,
+//   Future<void> sendPurchaseConfirmationEmail({
+//     required String userName,
+//     required String service,
+//     required String userMessage,
+//     required String userEmail,
+//     required String userSubject,
+//   }) async {
+//     final Email email = Email(
+//       body: '''
+// Dear $userName,
 
-Thank you for your recent purchase! We are pleased to confirm that you have successfully purchased the following service:
+// Thank you for your recent purchase! We are pleased to confirm that you have successfully purchased the following service:
 
----
+// ---
 
-**Service Purchased:**
-$service
+// **Service Purchased:**
+// $service
 
-**Message from You:**
-"$userMessage"
+// **Message from You:**
+// "$userMessage"
 
----
+// ---
 
-We appreciate your trust in our services and look forward to assisting you. 
+// We appreciate your trust in our services and look forward to assisting you.
 
-If you have any questions or need further assistance, please feel free to contact us.
+// If you have any questions or need further assistance, please feel free to contact us.
 
----
+// ---
 
-Best regards,
+// Best regards,
 
-The [Your Company Name] Team  
-Email: $userEmail  
-Subject: $userSubject
+// The [Your Company Name] Team
+// Email: $userEmail
+// Subject: $userSubject
 
----
+// ---
 
-Note: This email serves as confirmation of your recent service purchase. Please keep this information for your records.
-''',
-      subject: 'Confirmation of Your Service Purchase',
-      recipients: [userEmail],
-      cc: [],
-      bcc: [],
-      attachmentPaths: [],
-      isHTML: false,
-    );
+// Note: This email serves as confirmation of your recent service purchase. Please keep this information for your records.
+// ''',
+//       subject: 'Confirmation of Your Service Purchase',
+//       recipients: [userEmail],
+//       cc: [],
+//       bcc: [],
+//       attachmentPaths: [],
+//       isHTML: false,
+//     );
 
-    await FlutterEmailSender.send(email);
+//     await FlutterEmailSender.send(email);
+//   }
+
+  // generatepdf() async {
+  //   final date = DateTime.now();
+  //   final dueDate = date.add(Duration(days: 7));
+  //   final invoice = Invoice(
+  //       supplier: Supplier(
+  //         name: widget.name,
+  //         address: 'Sarah Street 9, Beijing, China',
+  //         paymentInfo: 'https://paypal.me/sarahfieldzz',
+  //       ),
+  //       customer: Customer(
+  //         name: 'lawyer_name',
+  //         address: 'Apple Street, Cupertino, CA 95014',
+  //       ),
+  //       info: InvoiceInfo(
+  //         date: date,
+  //         dueDate: dueDate,
+  //         description: 'My description...',
+  //         number: '${DateTime.now().year}-9999',
+  //       ),
+  //       items: List.generate(
+  //         widget.extraOption.length,
+  //         (index) {
+  //           return InvoiceItem(
+  //             description: widget.extraOption[index],
+  //             date: DateTime.now(),
+  //             quantity: 1,
+  //             vat: 0.19,
+  //             unitPrice: 100,
+  //           );
+  //         },
+  //       ));
+
+  //   final pdfFile = await PdfInvoiceApi.generate(invoice);
+  //   await Printing.layoutPdf(
+  //     onLayout: (PdfPageFormat format) async => pdfFile.readAsBytes(),
+  //   );
+
+  //   PdfApi.openFile(pdfFile);
+  // }
+
+  pdfgent() async {
+    final date = DateTime.now();
+    final dueDate = date.add(Duration(days: 7));
+
+    final invoice = Invoice(
+        supplier: Supplier(
+          name: 'Sarah Field',
+          address: 'Sarah Street 9, Beijing, China',
+          paymentInfo: 'https://paypal.me/sarahfieldzz',
+        ),
+        customer: Customer(
+          name: 'Apple Inc.',
+          address: 'Apple Street, Cupertino, CA 95014',
+        ),
+        info: InvoiceInfo(
+          date: date,
+          dueDate: dueDate,
+          description: 'My description...',
+          number: '${DateTime.now().year}-9999',
+        ),
+        items: List.generate(
+          widget.extraOption.length,
+          (index) {
+            return InvoiceItem(
+              description: widget.extraOption[index],
+              date: DateTime.now(),
+              quantity: 1,
+              vat: 0.19,
+              unitPrice: 100,
+            );
+          },
+        ));
+
+    final pdFFile = await PdfInvoiceApi.generate(invoice);
+    setState(() {
+      pdfFile = pdFFile;
+    });
+    // await Printing.layoutPdf(
+    //     onLayout: (PdfPageFormat format) async => pdfFile.readAsBytes());
+    // await OpenFile.open(pdfFile.path);
+    setState(() {
+      isshowbutton = true;
+    });
+
+    showToast(message: "Now you can save and share the Receipt");
+    await OpenFile.open(pdfFile.path);
   }
 
   @override
@@ -233,6 +359,29 @@ Note: This email serves as confirmation of your recent service purchase. Please 
     double total = subTotal + fee - discount;
 
     return Scaffold(
+      floatingActionButton: Visibility(
+        visible: isshowbutton,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          FloatingActionButton(
+            onPressed: () async {
+              await Printing.layoutPdf(
+                onLayout: (format) async => pdfFile.readAsBytes(),
+              );
+            },
+            heroTag: 'printBtn',
+            child: const Icon(Icons.print),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () async {
+              await Share.shareXFiles([XFile(pdfFile.path)],
+                  text: 'Here is your document');
+            },
+            heroTag: 'shareBtn',
+            child: const Icon(Icons.share),
+          ),
+        ]),
+      ),
       backgroundColor: TColor.white,
       body: SingleChildScrollView(
         child: Padding(
@@ -578,9 +727,11 @@ Note: This email serves as confirmation of your recent service purchase. Please 
                     //   child: const Text("Generate Receipt"),
                     // ),
                     const SizedBox(height: 20),
+
                     ElevatedButton(
                       onPressed: () {
                         makePayment();
+                        // generatepdf();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF11CEC4),
