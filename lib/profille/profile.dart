@@ -8,6 +8,8 @@ import 'package:law_app/Orders/user_orders_page.dart';
 import 'package:law_app/components/common/round_button.dart';
 import 'package:law_app/components/common/round_textfield.dart';
 import 'package:law_app/components/toaster.dart';
+
+import '../components/common/uploadtask.dart';
 // import 'package:image_picker/image_picker.dart' as imgg;
 
 class ProfileView extends StatefulWidget {
@@ -43,32 +45,6 @@ class _ProfileViewState extends State<ProfileView> {
     setState(() {
       image = File(pickedFile.path);
     });
-  }
-
-  Future<void> storeToFirebase(File? imageFile, String userId) async {
-    if (imageFile == null) return showToast(message: "Image is not selected");
-
-    try {
-      final ref =
-          FirebaseStorage.instance.ref().child('$userId/image/profilepic');
-      final uploadTask = ref.putFile(imageFile);
-
-      final snapshot = await uploadTask.whenComplete(() {});
-      final downloadUrl = await snapshot.ref.getDownloadURL();
-
-      await FirebaseAuth.instance.currentUser?.updatePhotoURL(downloadUrl);
-
-      // await FirebaseFirestore.instance
-      //     .collection('users')
-      //     .doc(userId)
-      //     .update({'photoURL': downloadUrl}); // Update photo URL in Firestore
-
-      setState(() {
-        showToast(message: "Profile Image Updated Successfully");
-      });
-    } catch (e) {
-      showToast(message: "Failed to Upload Image: $e");
-    }
   }
 
   Future<void> saveProfile() async {
@@ -265,9 +241,12 @@ class _ProfileViewState extends State<ProfileView> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: RoundButton(
                 title: "Save",
-                onPressed: () {
+                onPressed: () async {
                   if (image != null) {
-                    storeToFirebase(image, user!.uid);
+                    final downloadUrl = await storeToFirebase(
+                        image!, "${user!.uid}/image/profilepic");
+                    await FirebaseAuth.instance.currentUser
+                        ?.updatePhotoURL(downloadUrl);
                   }
                   if (txtName.text != null || txtMobile.text != null) {
                     saveProfile();

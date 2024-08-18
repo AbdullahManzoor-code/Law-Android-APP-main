@@ -12,8 +12,10 @@
 // Redirect URI
 
 // https://localhost:300/auth
-
+import 'package:law_app/Google%20meetup/shedule.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ScheduleMeeting extends StatelessWidget {
@@ -75,8 +77,15 @@ class ScheduleMeeting extends StatelessWidget {
                               ),
                             ),
                             onPressed: () async {
-                              await launchUrlString(
-                                  "https://zcal.co/i/7HMuXETO");
+                              // final weburi =
+                              //     Uri.parse("https://zcal.co/i/7HMuXETO");
+                              // await launchUrl(weburi,
+                              //     mode: LaunchMode.inAppWebView);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SchedulMeeting(),
+                                  ));
                             },
                             child: const Text(
                               "Schedule Meeting",

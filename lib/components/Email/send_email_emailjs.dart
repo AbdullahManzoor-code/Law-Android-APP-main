@@ -14,6 +14,7 @@ Future<bool> sendEmailUsingEmailjs({
   required String email,
   required String subject,
   required String message,
+  required String pdf,
   String? services,
   required bool isadmin,
   File? pdfAttachment, // New parameter for the PDF attachment
@@ -37,7 +38,7 @@ Future<bool> sendEmailUsingEmailjs({
       'attachment': base64Pdf != null
           ? 'data:application/pdf;base64,$base64Pdf'
           : '', // Include the PDF attachment if available
-      'file_name': fileName ?? '', // Include the file name if available
+      'file_link': pdf ?? '', // Include the file name if available
     };
 
     await emailjs.send(

@@ -158,6 +158,9 @@ class _FormPageState extends State<FormPage> {
         loading = true;
       });
 
+      String services =
+          '${widget.selectedCategory} - ${widget.selectedCategoryOption} - ${widget.selectedCategorySubOption} - ${widget.selectedCategorySubOptionName}';
+      //   ),
       // Create a map of the data to store
       final orderData = {
         'name': _nameController.text.trim(),
@@ -171,6 +174,8 @@ class _FormPageState extends State<FormPage> {
         'selectedCategorySubOptionName': widget.selectedCategorySubOptionName,
         'userId': currentUser?.uid,
         'status': 'in progress',
+        'subject': services,
+
         'fileUrl': fileUrls,
         'extraOption': selectedOptions,
         'totalPrice': selectedOptions.isNotEmpty
@@ -182,17 +187,16 @@ class _FormPageState extends State<FormPage> {
 
       try {
         // Store the data in Firestore
-        await FirebaseFirestore.instance.collection('orders').add(orderData);
+        DocumentReference reference = await FirebaseFirestore.instance
+            .collection('orders')
+            .add(orderData);
         showToast(message: 'Submitted successfully!');
         // Show a success message or navigate
         // ScaffoldMessenger.of(context).showSnackBar(
         //   const SnackBar(content: Text('Submitted successfully!')
-        //   ),
         // );
 
         // combine services and sub services
-        String services =
-            '${widget.selectedCategory} - ${widget.selectedCategoryOption} - ${widget.selectedCategorySubOption} - ${widget.selectedCategorySubOptionName}';
 
         // send email
 
@@ -210,6 +214,7 @@ class _FormPageState extends State<FormPage> {
           context,
           MaterialPageRoute(
             builder: (context) => PayNowPage(
+              docRef: reference,
               name: _nameController.text.trim(),
               email: _emailController.text.trim(),
               subject: services,

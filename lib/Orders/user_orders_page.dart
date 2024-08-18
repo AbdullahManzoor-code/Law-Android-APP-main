@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../Hire Services/pay_now_page.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key});
@@ -20,6 +21,11 @@ class _OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton.filled(
+            onPressed: () {
+              print("object");
+            },
+            icon: Icon(Icons.abc)),
         elevation: 0,
         backgroundColor: Colors.transparent,
         // title: const Text(
@@ -57,11 +63,34 @@ class _OrderPageState extends State<OrderPage> {
               var timestamp = order['timestamp'] as Timestamp;
               var formattedDate =
                   DateFormat('yyyy-MM-dd – kk:mm').format(timestamp.toDate());
-              return ListTile(
-                leading: const Icon(Icons.receipt),
-                title: Text(order['selectedCategorySubOptionName']),
-                subtitle: Text(formattedDate),
-                trailing: Text(order['status']),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PayNowPage(
+                          docRef: order.reference,
+                          name: order["name"],
+                          email: order["email"],
+                          subject: order["name"],
+                          message: order["message"],
+                          services: order['selectedCategorySubOptionName'],
+                          heading: order["selectedCategory"],
+                          title: order["selectedCategoryOption"],
+                          subTitle: order['selectedCategorySubOption'],
+                          option: order['selectedCategorySubOptionName'],
+                          totalPrice: order['totalPrice'],
+                          extraOption: List<String>.from(order[
+                              "extraOption"]), // Explicitly casting to List<String>
+                        ),
+                      ));
+                },
+                child: ListTile(
+                  leading: const Icon(Icons.receipt),
+                  title: Text(order['selectedCategorySubOptionName']),
+                  subtitle: Text(formattedDate),
+                  trailing: Text(order['status']),
+                ),
               );
             },
           );

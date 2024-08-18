@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/androidenterprise/v1.dart';
 import 'package:law_app/Hire%20Quickly/hire_quickly.dart';
 import 'package:law_app/components/Email/send_email_emailjs.dart';
+import 'package:law_app/components/common/uploadtask.dart';
 import 'package:law_app/components/toaster.dart';
 import 'package:law_app/receipt/model/customer.dart';
 import 'package:law_app/receipt/model/invoice.dart';
@@ -36,6 +39,7 @@ class PayNowPage extends StatefulWidget {
   final String subject;
   final String message;
   final String services;
+  final DocumentReference<Object?> docRef;
   // ignore: use_super_parameters
   PayNowPage(
       {Key? key,
@@ -49,7 +53,8 @@ class PayNowPage extends StatefulWidget {
       required this.email,
       required this.subject,
       required this.message,
-      required this.services})
+      required this.services,
+      required this.docRef})
       : super(key: key);
 
   @override
@@ -57,6 +62,8 @@ class PayNowPage extends StatefulWidget {
 }
 
 class _PayNowPageState extends State<PayNowPage> {
+  final user = FirebaseAuth.instance.currentUser;
+
   List paymentArr = [
     {"name": "Cash on delivery", "icon": "assets/images/cash.png"},
   ];
@@ -71,11 +78,15 @@ class _PayNowPageState extends State<PayNowPage> {
 
   late File pdfFile;
 
+  bool isPaid = false;
+
   @override
   void initState() {
     super.initState();
+
     Stripe.publishableKey =
         'pk_test_51PkMrnCSoqn7lOOtvp6danTk6p8Ti7ED9efwk1SgYz9HSPLwfs8gzuOrWDq8ymrH4XPkjJKUz93uxFVuQQDplSm400oRTIUGup';
+    fetchOrderStatus();
   }
   ///////////////////////////Stripe payment gate way ////////////////////////
 
@@ -105,83 +116,87 @@ class _PayNowPageState extends State<PayNowPage> {
   }
 
   Future<void> displayPaymentSheet() async {
-    try {
-      await Stripe.instance.presentPaymentSheet();
-      setState(() {
-        paymentIntentData = null;
-      });
-      Fluttertoast.showToast(
-        msg: "Payment successful",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      pdfgent();
-      // try {
-      //   final Email email = Email(
-      //     body: 'Email body',
-      //     subject: widget.subject,
-      //     recipients: [widget.email],
-      //     cc: ['cc@example.com'],
-      //     bcc: ['bcc@example.com'],
-      //     attachmentPaths: [pdfFile.path],
-      //     isHTML: false,
-      //   );
+    // try {
+    await Stripe.instance.presentPaymentSheet();
+    setState(() {
+      paymentIntentData = null;
+    });
+    Fluttertoast.showToast(
+      msg: "Payment successful",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+    await pdfgent();
+    final receipt =
+        await storeToFirebase(pdfFile, "receipts/${widget.docRef.id}");
+    updateOrderStatus(widget.docRef.id);
+    // Use
+    // try {
+    //   final Email email = Email(
+    //     body: 'Email body',
+    //     subject: widget.subject,
+    //     recipients: [widget.email],
+    //     cc: ['cc@example.com'],
+    //     bcc: ['bcc@example.com'],
+    //     attachmentPaths: [pdfFile.path],
+    //     isHTML: false,
+    //   );
 
-      //   await FlutterEmailSender.send(email);
-      // } catch (e) {
-      //   showToast(message: "$e this scenod eamil");
-      // }
+    //   await FlutterEmailSender.send(email);
+    // } catch (e) {
+    //   showToast(message: "$e this scenod eamil");
+    // }
 
-      sendEmailUsingEmailjs(
-          isadmin: true,
+    sendEmailUsingEmailjs(
+        isadmin: true,
 
-          ///sending to admin
-          name: widget.name,
-          email: widget.email,
-          subject: widget.subject,
-          message: widget.message,
-          pdfAttachment: pdfFile);
+        ///sending to admin
+        name: widget.name,
+        email: widget.email,
+        subject: widget.subject,
+        message: widget.message,
+        pdf: receipt!);
 
-      sendEmailUsingEmailjs(
-          isadmin: false,
+    sendEmailUsingEmailjs(
+        isadmin: false,
 
-          ///sending to customer
-          name: widget.name,
-          email: widget.email,
-          subject: widget.subject,
-          message: widget.message,
-          pdfAttachment: pdfFile);
+        ///sending to customer
+        name: widget.name,
+        email: widget.email,
+        subject: widget.subject,
+        message: widget.message,
+        pdf: receipt);
 
-      // sendEmailUsingEmailjs(
-      //     name: _nameController.text,
-      //     email: _emailController.text,
-      //     subject: services,
-      //     message: _messageController.text,
-      //     services: widget.selectedCategorySubOptionName);
-      // } on StripeException catch (e) {
-      //   print('StripeException: $e');
-      //   Fluttertoast.showToast(
-      //     msg: "Payment failed",
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     backgroundColor: Colors.red,
-      //     textColor: Colors.white,
-      //     fontSize: 16.0,
-      //   );
-    } catch (e) {
-      print('Exception: $e');
-      Fluttertoast.showToast(
-        msg: "Payment failed",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    }
+    // sendEmailUsingEmailjs(
+    //     name: _nameController.text,
+    //     email: _emailController.text,
+    //     subject: services,
+    //     message: _messageController.text,
+    //     services: widget.selectedCategorySubOptionName);
+    // } on StripeException catch (e) {
+    //   print('StripeException: $e');
+    //   Fluttertoast.showToast(
+    //     msg: "Payment failed",
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0,
+    //   );
+    // } catch (e) {
+    //   print('Exception: $e');
+    //   Fluttertoast.showToast(
+    //     msg: "Payment failed",
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0,
+    //   );
+    // }
   }
 
   Future<Map<String, dynamic>> createPaymentIntent(
@@ -205,6 +220,22 @@ class _PayNowPageState extends State<PayNowPage> {
     } catch (err) {
       print('Error creating payment intent: $err');
       throw err;
+    }
+  }
+
+  Future<void> updateOrderStatus(String reference) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('orders') // The name of your collection
+          .doc(
+              reference) // The specific document ID (reference) you want to update
+          .update({
+        'status': 'completed', // The field you want to update
+      });
+
+      print('Order status updated successfully.');
+    } catch (e) {
+      print('Failed to update order status: $e');
     }
   }
 
@@ -349,6 +380,21 @@ class _PayNowPageState extends State<PayNowPage> {
 
     showToast(message: "Now you can save and share the Receipt");
     await OpenFile.open(pdfFile.path);
+    fetchOrderStatus();
+  }
+
+  Future<void> fetchOrderStatus() async {
+    try {
+      DocumentSnapshot orderSnapshot = await widget.docRef.get();
+      String status = orderSnapshot.get('status');
+
+      setState(() {
+        isPaid = status == 'completed';
+      });
+      print('Error fetching order status:');
+    } catch (e) {
+      print('Error fetching order status: $e');
+    }
   }
 
   @override
@@ -730,7 +776,9 @@ class _PayNowPageState extends State<PayNowPage> {
 
                     ElevatedButton(
                       onPressed: () {
-                        makePayment();
+                        (isPaid)
+                            ? showToast(message: "you have already pay")
+                            : makePayment();
                         // generatepdf();
                       },
                       style: ElevatedButton.styleFrom(
@@ -739,8 +787,8 @@ class _PayNowPageState extends State<PayNowPage> {
                             horizontal: 110, vertical: 15),
                         textStyle: const TextStyle(fontSize: 20),
                       ),
-                      child: const Text(
-                        "Pay Now",
+                      child: Text(
+                        isPaid ? "paid" : "Pay Now",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
