@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:law_app/Orders/paid.dart';
 import '../Hire Services/pay_now_page.dart';
 
 class OrderPage extends StatefulWidget {
@@ -12,20 +13,40 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
+
   final CollectionReference orders =
       FirebaseFirestore.instance.collection('orders');
 
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
+  
+  bool isPaid=false;
+  
+  String receipturl="";
 
   @override
   Widget build(BuildContext context) {
+  Future<void> fetchOrderStatus(docRef) async {
+    try {
+      DocumentSnapshot orderSnapshot = await docRef.get();
+      String status = orderSnapshot.get('status');
+     receipturl= orderSnapshot.get('receipturl');
+
+
+      setState(() {
+        isPaid = status == 'completed';
+      });
+      print('Error fetching order status:');
+    } catch (e) {
+      print('Error fetching order status: $e');
+    }
+  }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton.filled(
             onPressed: () {
               print("object");
             },
-            icon: Icon(Icons.abc)),
+            icon: const Icon(Icons.abc)),
         elevation: 0,
         backgroundColor: Colors.transparent,
         // title: const Text(
@@ -65,6 +86,8 @@ class _OrderPageState extends State<OrderPage> {
                   DateFormat('yyyy-MM-dd – kk:mm').format(timestamp.toDate());
               return GestureDetector(
                 onTap: () {
+                  fetchOrderStatus(order.reference);
+                  isPaid? Navigator.push(context, MaterialPageRoute(builder:(context) =>  PdfViewerScreen(receipturl: receipturl,),)):
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -84,6 +107,7 @@ class _OrderPageState extends State<OrderPage> {
                               "extraOption"]), // Explicitly casting to List<String>
                         ),
                       ));
+
                 },
                 child: ListTile(
                   leading: const Icon(Icons.receipt),

@@ -132,7 +132,7 @@ class _PayNowPageState extends State<PayNowPage> {
     await pdfgent();
     final receipt =
         await storeToFirebase(pdfFile, "receipts/${widget.docRef.id}");
-    updateOrderStatus(widget.docRef.id);
+    updateOrderStatus(widget.docRef.id,"receipts/${widget.docRef.id}");
     // Use
     // try {
     //   final Email email = Email(
@@ -223,14 +223,15 @@ class _PayNowPageState extends State<PayNowPage> {
     }
   }
 
-  Future<void> updateOrderStatus(String reference) async {
+  Future<void> updateOrderStatus(String reference,String url) async {
     try {
       await FirebaseFirestore.instance
           .collection('orders') // The name of your collection
           .doc(
               reference) // The specific document ID (reference) you want to update
           .update({
-        'status': 'completed', // The field you want to update
+        'status': 'completed',
+        'receipturl':url // The field you want to update
       });
 
       print('Order status updated successfully.');
