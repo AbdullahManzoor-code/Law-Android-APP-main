@@ -85,7 +85,7 @@ dependencies:
   pdftron_flutter: ^1.0.1-32
   syncfusion_flutter_pdf: ^26.2.10
   flutter_facebook_auth: ^7.1.0
-  shared_preferences: ^2.3.2
+  # shared_preferences: ^2.3.2
   
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
