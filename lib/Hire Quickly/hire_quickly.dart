@@ -19,7 +19,7 @@ final List products = [
     'heading': 'Consumer Contracts',
     'title': 'Hotel',
     'subTitle': 'Reservation',
-    'option': 'Cancelled',
+    'option': 'Cancel',
     'price': '200',
     'description':
         'Coverage for hotel reservation cancellations, including refunds and compensation for inconvenience.',
@@ -64,7 +64,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FormPage(
+                    builder: (context) => FormPage(isfromorder: false,oderID: "",
                       selectedCategory: _selectedIndex['heading'],
                       selectedCategoryOption: _selectedIndex['title'],
                       selectedCategorySubOption: _selectedIndex['subTitle'],
@@ -240,9 +240,9 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                                 ],
                               ),
                             ),
-                            // const SizedBox(
-                            //   height: 20,
-                            // ),
+                            const SizedBox(
+                              height: 50,
+                            ),
                             Center(
                               child: Container(
                                 height: 50,
@@ -257,7 +257,7 @@ class _HireQuicklyPageState extends State<HireQuicklyPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => FormPage(
+                                          builder: (context) => FormPage(isfromorder: false,oderID: "",
                                             selectedCategory: item['Type'],
                                             selectedCategoryOption:
                                                 item['title'],

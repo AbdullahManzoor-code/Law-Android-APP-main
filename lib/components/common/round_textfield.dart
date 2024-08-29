@@ -74,7 +74,7 @@ class RoundTitleTextfield extends StatelessWidget {
       this.keyboardType,
       this.bgColor,
       this.left,
-      this.obscureText = false});
+      this.obscureText = false, required String? Function(dynamic value) validator});
 
   @override
   Widget build(BuildContext context) {

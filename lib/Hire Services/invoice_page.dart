@@ -11,7 +11,7 @@ import 'package:flutter/services.dart' show rootBundle;
 final InvoiceInfo invoiceInfo = InvoiceInfo(
   description: 'Order Invoice',
   date: DateTime.now(),
-  dueDate: DateTime.now().add(Duration(days: 7)),
+  dueDate: DateTime.now().add(const Duration(days: 7)),
 );
 
 Future<void> saveCartItems(List<InvoiceItem> items) async {
@@ -67,18 +67,18 @@ class _InvoicePageState extends State<InvoicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Invoice'),
+        title: const Text('Invoice'),
       ),
       body: SafeArea(
         child: FutureBuilder<List<InvoiceItem>>(
           future: futureItems,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text('No items found'));
+              return const Center(child: Text('No items found'));
             } else {
               final items = snapshot.data!;
               final customer = Customer(
@@ -89,7 +89,7 @@ class _InvoicePageState extends State<InvoicePage> {
               final invoiceInfo = InvoiceInfo(
                 description: 'Order Invoice',
                 date: DateTime.now(),
-                dueDate: DateTime.now().add(Duration(days: 7)),
+                dueDate: DateTime.now().add(const Duration(days: 7)),
               );
               // final supplier = Supplier(
               //   name: 'Foodie-Food Order',
@@ -120,17 +120,17 @@ class _InvoicePageState extends State<InvoicePage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       buildInfoCard(invoiceInfo),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       buildItemsTable(items),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       buildTotal(items),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       buildContactInfo(customer),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       buildDownloadButton(context, customer, items),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -146,7 +146,7 @@ class _InvoicePageState extends State<InvoicePage> {
     return Card(
       elevation: 4,
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -160,11 +160,11 @@ class _InvoicePageState extends State<InvoicePage> {
                 Icon(Icons.description, color: Colors.blue),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text('Invoice Number: $invoiceNumber'),
             Text('Invoice Date: ${Utils.formatDate(invoiceInfo.date)}'),
             Text('Due Date: ${Utils.formatDate(invoiceInfo.dueDate)}'),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
           ],
         ),
       ),
@@ -175,7 +175,7 @@ class _InvoicePageState extends State<InvoicePage> {
     return Card(
       elevation: 4,
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -194,10 +194,10 @@ class _InvoicePageState extends State<InvoicePage> {
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: [
-                  DataColumn(label: Text('Description')),
-                  DataColumn(label: Text('Quantity')),
-                  DataColumn(label: Text('Unit Price')),
-                  DataColumn(label: Text('Total')),
+                  const DataColumn(label: Text('Description')),
+                  const DataColumn(label: Text('Quantity')),
+                  const DataColumn(label: Text('Unit Price')),
+                  const DataColumn(label: Text('Total')),
                 ],
                 rows: items
                     .map((item) => DataRow(
@@ -231,7 +231,7 @@ class _InvoicePageState extends State<InvoicePage> {
     return Card(
       elevation: 4,
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -245,12 +245,12 @@ class _InvoicePageState extends State<InvoicePage> {
                 Icon(Icons.monetization_on, color: Colors.orange),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text('Net Total: ${Utils.formatPrice(netTotal)}'),
-            Divider(),
+            const Divider(),
             Text(
               'Total Amount Due: ${Utils.formatPrice(netTotal + vatTotal)}',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -264,7 +264,7 @@ class _InvoicePageState extends State<InvoicePage> {
       child: Card(
         elevation: 4,
         child: Padding(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,7 +282,7 @@ class _InvoicePageState extends State<InvoicePage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     const Icon(Icons.person, color: Colors.blue),

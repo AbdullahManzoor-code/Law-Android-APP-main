@@ -140,12 +140,13 @@ class PdfInvoiceApi {
       ];
     }).toList();
 
+    // ignore: deprecated_member_use
     return Table.fromTextArray(
       headers: headers,
       data: data,
       border: null,
       headerStyle: TextStyle(fontWeight: FontWeight.bold),
-      headerDecoration: BoxDecoration(color: PdfColors.grey300),
+      headerDecoration: const BoxDecoration(color: PdfColors.grey300),
       cellHeight: 30,
       cellAlignments: {
         0: Alignment.centerLeft,

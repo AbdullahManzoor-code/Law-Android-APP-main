@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:law_app/components/common/timer.dart';
+import 'package:law_app/components/toaster.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SchedulMeeting extends StatefulWidget {
@@ -21,10 +23,13 @@ class _SchedulMeetingState extends State<SchedulMeeting> {
           onPageStarted: (url) {
             if (url == "https://zcal.co/i/7HMuXETO/done") {
               Navigator.pop(context);
+
             }
           },
           onUrlChange: (change) {
             if (change == "https://zcal.co/i/7HMuXETO/done") {
+                            showToast(message: "Event sucessfully added ");
+
               Navigator.pop(context);
             }
           },
@@ -75,12 +80,14 @@ class _SchedulMeetingState extends State<SchedulMeeting> {
       )
       ..loadRequest(Uri.parse(webUrl));
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Schedule Meeting'),
-        ),
-        body: WebViewWidget(
-          controller: _webViewController,
+      child: IdleTimeoutWrapper(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Schedule Meeting'),
+          ),
+          body: WebViewWidget(
+            controller: _webViewController,
+          ),
         ),
       ),
     );

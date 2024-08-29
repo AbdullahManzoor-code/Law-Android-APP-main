@@ -13,10 +13,7 @@
 
 // https://localhost:300/auth
 import 'package:law_app/Google%20meetup/shedule.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class ScheduleMeeting extends StatelessWidget {
   const ScheduleMeeting({super.key});

@@ -68,4 +68,5 @@ Future<String?> storeToFirebase(File imageFile, String path) async {
   } catch (e) {
     showToast(message: "Failed to Upload  $e");
   }
+  return null;
 }

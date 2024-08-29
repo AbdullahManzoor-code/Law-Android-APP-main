@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:emailjs/emailjs.dart' as emailjs;
 import 'package:law_app/components/toaster.dart'; // Import the Fluttertoast package or your custom `showToast` function
@@ -15,19 +14,14 @@ Future<bool> sendEmailUsingEmailjs({
   required String subject,
   required String message,
   required String pdf,
+  required String? qrcode,
   String? services,
   required bool isadmin,
   File? pdfAttachment, // New parameter for the PDF attachment
 }) async {
   try {
     // Convert the PDF file to a base64 string if an attachment is provided
-    String? base64Pdf;
-    String? fileName;
-    if (pdfAttachment != null) {
-      List<int> fileBytes = pdfAttachment.readAsBytesSync();
-      base64Pdf = base64Encode(fileBytes);
-      fileName = pdfAttachment.path.split('/').last;
-    }
+   
 
     final templateParams = {
       'user_name': name,
@@ -35,10 +29,9 @@ Future<bool> sendEmailUsingEmailjs({
       'user_subject': subject,
       'user_message': message,
       'service': services ?? '',
-      'attachment': base64Pdf != null
-          ? 'data:application/pdf;base64,$base64Pdf'
-          : '', // Include the PDF attachment if available
-      'file_link': pdf ?? '', // Include the file name if available
+     
+      'file_link': pdf, // Include the file name if available
+      'qr_code_url':qrcode 
     };
 
     await emailjs.send(
@@ -52,7 +45,7 @@ Future<bool> sendEmailUsingEmailjs({
     showToast(
       message: isadmin
           ? "Email sent successfully to the lawyer!"
-          : "Email sent successfully to your Email ${email}",
+          : "Email sent successfully to your Email $email",
     );
     return true;
   } catch (error) {

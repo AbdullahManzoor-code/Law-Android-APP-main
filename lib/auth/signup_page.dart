@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:law_app/auth/authProviders/googleAuth.dart';
@@ -22,6 +24,16 @@ class _SignupPageState extends State<SignupPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+Country? country;
+  pickcountry() {
+    showCountryPicker(
+        context: context,
+        onSelect: (Country conutry) {
+          setState(() {
+            country = conutry;
+          });
+        });
+  }
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form?.validate() ?? false) {
@@ -32,6 +44,13 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Future<void> signUpWithEmailPassword() async {
+     final List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();
+  if (await connectivityResult.first == ConnectivityResult.none) {
+    // No internet connection, show a toast message
+    showToast(message: "Network error. Please check your internet connection.");
+    return;
+  }
+
     setState(() {
       loading = true;
     });
@@ -41,11 +60,13 @@ class _SignupPageState extends State<SignupPage> {
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
+          
         );
 
         // After successful signup, save the user's name and phone to Firestore
         final user = userCredential.user;
         if (user != null) {
+          user.updateDisplayName(_nameController.text.trim());
           await FirebaseFirestore.instance
               .collection('users')
               .doc(user.uid)
@@ -190,25 +211,80 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: TextFormField(
-                        controller: _phoneController,
-                        decoration: const InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xFF11CEC4))),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xFF11CEC4))),
-                          labelText: 'Phone',
-                          labelStyle: TextStyle(color: Color(0xFF11CEC4)),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: pickcountry,
+                      child: const Text("Pick your country"),
+                    ),
+                    TextFormField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        enabledBorder: const UnderlineInputBorder(
+                            borderSide: const BorderSide(color: Color(0xFF11CEC4))),
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF11CEC4))),
+                        labelText: 'Phone',
+                        labelStyle: const TextStyle(color: Color(0xFF11CEC4)),
+                        hintText: 'Enter your WhatsApp number',
+                        prefixIcon: const Icon(
+                          Icons.phone,
+                          color: Color(0xFF11CEC4),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Phone cannot be empty';
-                          }
-                          return null;
-                        },
+                        prefixText: (country != null)
+                            ? "+${country!.phoneCode}  "
+                            : null,
                       ),
+                      validator: (value) {
+  if (value == null || value.isEmpty) {
+    return 'Please enter your WhatsApp number';
+  }
+
+  // Check if the phone number starts with zero
+  if (value.startsWith('0')) {
+    return 'Phone number cannot start with zero';
+  }
+
+  // Define valid country codes and their corresponding length ranges and patterns
+  final validCountries = {
+    'GB': {'name': 'England', 'minLength': 10, 'maxLength': 10, 'pattern': '#### ######'}, // England (UK)
+    'US': {'name': 'USA', 'minLength': 10, 'maxLength': 10, 'pattern': '(###) ###-####'},     // USA
+    'DE': {'name': 'Germany', 'minLength': 10, 'maxLength': 11, 'pattern': '#### ### ####'}, // Germany
+    'FR': {'name': 'France', 'minLength': 9, 'maxLength': 9, 'pattern': '## ## ## ##'},    // France
+    'SE': {'name': 'Sweden', 'minLength': 9, 'maxLength': 9, 'pattern': '###-### ###'},    // Sweden
+    'PK': {'name': 'Pakistan', 'minLength': 10, 'maxLength': 10, 'pattern': '###-#######'}, // Pakistan
+  };
+
+  // Check if the country is selected and valid
+  if (country == null || !validCountries.containsKey(country!.countryCode)) {
+    return 'Please select a valid country';
+  }
+
+  // Validate phone number length for the selected country
+  final countrySettings = validCountries[country!.countryCode]!;
+  final phoneNumberLength = value.length;
+
+  if (phoneNumberLength <int.parse( countrySettings['minLength'].toString() )|| 
+      phoneNumberLength >int.parse( countrySettings['maxLength'].toString())) {
+    return 'Phone number must be ${countrySettings['minLength']} digits for ${countrySettings['name']}';
+  }
+
+  // Format phone number based on the pattern
+  final pattern = countrySettings['pattern']!;
+  int index = 0;
+
+  for (int i = 0; i < pattern.toString().length; i++) {
+    if (pattern.toString()[i] == '#') {
+      if (index < value.length) {
+      }
+    } else {
+    }
+  }
+
+  return null;
+},
+
+
                     ),
                     Padding(
                       padding: const EdgeInsets.all(12),
@@ -339,8 +415,11 @@ class _SignupPageState extends State<SignupPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          signInWithGoogle(context);
+                        onTap: () async{
+                      final user = await signInWithGoogle(context);
+                                 // ignore: use_build_context_synchronously
+                                 if(user!=null)   Navigator.of(context).pop();
+
                         },
                         child: Image.asset('assets/images/google.png',
                             height: 50, width: 50),

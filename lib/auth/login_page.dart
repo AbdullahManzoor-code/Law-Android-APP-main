@@ -1,11 +1,18 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:law_app/Home/home_page.dart';
+import 'package:law_app/Home/home_page.dart'; 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:law_app/auth/authProviders/fb_aurh.dart';
 import 'package:law_app/auth/authProviders/githubauth.dart';
+
 import 'package:law_app/auth/authProviders/googleAuth.dart';
-import 'package:law_app/auth/authProviders/linkedinAuth.dart';
+import 'package:law_app/auth/authProviders/x.dart';
 import 'package:law_app/auth/signup_page.dart';
 import 'package:law_app/components/toaster.dart';
+import 'package:twitter_login/twitter_login.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,74 +21,161 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> 
+ {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();  
 
-  bool loading = false;
+
+  bool loading  
+ = false;
   bool _isPasswordVisible = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool validateAndSave() {
     final form = _formKey.currentState;
-    if (form?.validate() ?? false) {
+    if (form?.validate()  
+ ?? false) {
       form?.save();
       return true;
     }
     return false;
   }
+Future<void> loginWithEmailPassword() async {
+  // Check network connectivity
+  final List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();
+  if ( connectivityResult.first == ConnectivityResult.none) {
+    showToast(message: "Network error. Please check your internet connection.");
+    return;
+  }
 
-  Future<void> loginWithEmailPassword() async {
-    if (validateAndSave()) {
+  if (validateAndSave()) {
+    setState(() {
+      loading = true;
+    });
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.emailVerified ) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+        showToast(message: "Login Successful! Welcome");
+      } else {
+        showToast(message: 'Please verify your email to log in.');
+        // Send verification email
+        final actionCodeSettings = ActionCodeSettings(
+          // This must be a valid Dynamic Links URL
+          url: 'https://yourapp.page.link/verify?email=${Uri.encodeComponent(user!.email!)}',
+          handleCodeInApp: true,
+              androidPackageName: 'com.example.law_app',
+              androidInstallApp: true,
+    // minimumVersion
+    androidMinimumVersion: '12'
+        );
+        try {
+          await user.sendEmailVerification(actionCodeSettings);
+        } catch (e) {
+          showToast(message: 'Failed to send verification email.');
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = 'An error occurred. Please try again.';
+      switch (e.code) {
+        case "ERROR_EMAIL_ALREADY_IN_USE":
+        case "account-exists-with-different-credential":
+        case "email-already-in-use":
+          errorMessage = "Email already used. Go to login page.";
+          break;
+        case "ERROR_WRONG_PASSWORD":
+        case "wrong-password":
+          errorMessage = "Wrong email/password combination.";
+          break;
+        case "ERROR_USER_NOT_FOUND":
+        case "user-not-found":
+          errorMessage = "No user found with this email.";
+          break;
+        case "ERROR_USER_DISABLED":
+        case "user-disabled":
+          errorMessage = "User disabled.";
+          break;
+        case "ERROR_TOO_MANY_REQUESTS":
+        case "operation-not-allowed":
+          errorMessage = "Too many requests to log into this account.";
+          break;
+        case "ERROR_OPERATION_NOT_ALLOWED":
+        case "operation-not-allowed":
+          errorMessage = "Server error, please try again later.";
+          break;
+        case "ERROR_INVALID_EMAIL":
+        case "invalid-email":
+          errorMessage = "Email address is invalid.";
+          break;
+        default:
+          errorMessage = "Email address or Password  is invalid";
+      }
+      showToast(message: errorMessage);
+    } on SocketException {
+      showToast(message: "Network error. Please check your internet connection.");
+    } catch (e) {
+      showToast(message: 'An unexpected error occurred. Please check credentials and try again.');
+    } finally {
       setState(() {
-        loading = true;
+        loading = false;
       });
-      try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
+    }
+  }
+}
+ 
+    signInWithTwitter() async {
+    final twitterLogin = TwitterLogin(
+      apiKey: 'MpmkZ1RUknIHBwnTeH5sDrxCC',
+      apiSecretKey: 'IKNA3v7yKOoJyi4ryWYSfmQ6jKWsMcDFrmvwzf2KCLzBhqa4FY',
+      redirectURI: 'flutter-twitter-practice://',
+    );
+
+    try {
+      final authResult = await twitterLogin.login();
+
+      if (authResult.status == TwitterLoginStatus.loggedIn) {
+        final twitterAuthCredential = TwitterAuthProvider.credential(
+          accessToken: authResult.authToken!,
+          secret: authResult.authTokenSecret!,
         );
 
-        // Check if email is verified
-        final user = FirebaseAuth.instance.currentUser;
-        if (user != null && user.emailVerified) {
-          // Show success toast and navigate to home page
-          showToast(message: "Login Successful! Welcome");
+        final userCredential = await FirebaseAuth.instance
+            .signInWithCredential(twitterAuthCredential);
+    final user =userCredential.user;
 
-          // ignore: use_build_context_synchronously
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const HomePage()));
-        } else {
-          // Show message to verify email
-          showToast(message: 'Please verify your email to log in.');
-
-          // Optionally, resend verification email
-          try {
-            await user?.sendEmailVerification();
-          } catch (e) {
-            // Handle errors specifically from sendEmailVerification
-            showToast(message: 'Failed to send verification email.');
-          }
-        }
-      } on FirebaseAuthException catch (e) {
-        String errorMessage = 'An error occurred. Please try again.';
-        if (e.code == 'user-not-found') {
-          errorMessage = 'No user found for that email.';
-        } else if (e.code == 'wrong-password') {
-          errorMessage = 'Wrong password provided for that user.';
-        }
-
-        showToast(message: errorMessage);
-      } catch (e) {
-        showToast(
-            message:
-                'An unexpected error occurred. Please check credentials and try again.');
-      } finally {
-        setState(() {
-          loading = false;
-        });
+          // Retrieve email from Twitter API
+ if (user != null) {
+          final email = await (authResult.authToken!, authResult.authTokenSecret!);
+        // Ensure values are not null before saving
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'name': user.displayName ?? '',
+          'email': user.email ?? '',
+          'phone': user.phoneNumber ?? '',
+          'profilepic': user.photoURL ?? '',
+        });}
+        // if (userCredential.user != null) {
+        
+        //   Navigator.of(context).pushReplacement(
+        //       MaterialPageRoute(builder: (context) => const HomePage()));
+        // }
+      return  userCredential;
+      } else if (authResult.status == TwitterLoginStatus.cancelledByUser) {
+        showToast(message: "Twitter login cancelled by user.");
+      } else if (authResult.status == TwitterLoginStatus.error) {
+        showToast(message: "Twitter login error: ${authResult.errorMessage}");
       }
+    } catch (e) {
+      showToast(message: "Error during Twitter login: $e");
     }
   }
 
@@ -262,8 +356,16 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          signInWithGoogle(context);
+                        onTap: ()async {
+                         await signInWithGoogle(context);
+        //                 if(user!=null){
+        //                           Navigator.pushAndRemoveUntil(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const HomePage()),
+        //   (Route<dynamic> route) => false,
+        // );
+
+        //                 }
                         },
                         child: Image.asset('assets/images/google.png',
                             height: 50, width: 50),
@@ -271,63 +373,100 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         width: 20,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LinkedInDemoPage()),
-                          );
-                        },
-                        child: Image.asset('assets/images/linkedin.png',
-                            height: 50, width: 50),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => const LinkedInDemoPage()),
+                      //     );
+                      //   },
+                      //   child: Image.asset('assets/images/linkedin.png',
+                      //       height: 50, width: 50),
+                      // ),
+                       const SizedBox(
+                        width: 20,
                       ),
                       GestureDetector(
-                        onTap: () async {
-                          try {
-                            UserCredential userCredential =
-                                await signin_withgithub();
+                        onTap: ()async  {
+                          // try {
+                             await   signInWithTwitter();
                             // if (context.mounted) {
                             //   Navigator.push(
                             //       context,
                             //       MaterialPageRoute(
                             //           builder: (context) => HomePage()));
                             // }
-                            // ignore: unnecessary_null_comparison
-                            if (userCredential != null) {
-                              Navigator.push(
-                                  // ignore: use_build_context_synchronously
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const HomePage()));
+                            // // ignore: unnecessary_null_comparison
+                            // if (userCredential != null) {showToast(message: "notlogin");}
+                              //  Navigator.push(
+                              //     // ignore: use_build_context_synchronously
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>  LoginWithTwitter()));
                             }
-                          } catch (e) {
-                            showToast(message: e.toString());
-                          }
-                        },
-                        child: Image.asset('assets/images/github.png',
-                            height: 50, width: 50),
+                          // } catch (e) {
+                          //   showToast(message: e.toString());
+                          // }
+                        // },
+                        ,
+                        child: Image.asset('assets/images/x.jpg',
+                            height: 50, width: 40),
                       ),
                     ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(_createRoute());
-                  },
-                  child: Container(
-                    height: 100,
-                    width: 50,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF11CEC4),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(100),
-                          bottomLeft: Radius.circular(100)),
-                    ),
-                    child: const Icon(Icons.arrow_forward,
-                        size: 40, color: Colors.white),
-                  ),
-                ),
+                // GestureDetector(
+                //         onTap: () async {
+                //           try {
+                //             // UserCredential userCredential =
+                //             //    await signInWithTwitter();
+                //             // if (context.mounted) {
+                //             //   Navigator.push(
+                //             //       context,
+                //             //       MaterialPageRoute(
+                //             //           builder: (context) => HomePage()));
+                //             // }
+                //             // ignore: unnecessary_null_comparison
+                //             // if (userCredential != null) {
+                //             //   Navigator.push(
+                //             //       // ignore: use_build_context_synchronously
+                //             //       context,
+                //             //       MaterialPageRoute(
+                //             //           builder: (context) => const HomePage()));
+                //             // }
+                //              Navigator.push(
+                //                   // ignore: use_build_context_synchronously
+                //                   context,
+                //                   MaterialPageRoute(
+                //                       builder: (context) =>  LoginWithFacebook()));
+                //           } catch (e) {
+                //             showToast(message: e.toString());
+                //           }
+                //         },
+                //         child: Image.asset('assets/images/x.jpg',
+                //             height: 50, width: 40),
+                //       ),
+                    
+                //   const SizedBox(width: 50,)
+                // ,
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.of(context).push(_createRoute());
+                //   },
+                //   child: Container(
+                //     height: 100,
+                //     width: 50,
+                //     decoration: const BoxDecoration(
+                //       color: Color(0xFF11CEC4),
+                //       borderRadius: BorderRadius.only(
+                //           topLeft: Radius.circular(100),
+                //           bottomLeft: Radius.circular(100)),
+                //     ),
+                //     child: const Icon(Icons.arrow_forward,
+                //         size: 40, color: Colors.white),
+                //   ),
+                // ),
               ],
             ),
           ],

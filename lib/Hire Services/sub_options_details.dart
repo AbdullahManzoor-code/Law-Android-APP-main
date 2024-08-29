@@ -133,10 +133,10 @@ class SubOptionDetail extends StatelessWidget {
                   ).show(context);
                 },
                 style: ButtonStyle(
-                  padding: MaterialStateProperty.all(
+                  padding: WidgetStateProperty.all(
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                   ),
-                  backgroundColor: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(
                     const Color.fromARGB(255, 159, 129, 247),
                   ),
                   shape: WidgetStateProperty.all(

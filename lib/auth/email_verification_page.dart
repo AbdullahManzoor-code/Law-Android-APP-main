@@ -24,10 +24,10 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         await FirebaseAuth.instance.currentUser?.reload();
         var user = FirebaseAuth.instance.currentUser;
         // Check if email is verified
-        if (user != null && user.emailVerified) {
+        if (user != null && user.emailVerified ) {
           timer.cancel();
           showToast(message: "Email successfully verified!");
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const HomePage()));
         }
       } catch (e) {

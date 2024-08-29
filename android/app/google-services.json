@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "632674462438-2kh1v555286qavebfu5ivohdia8apm0d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.law_app",
+            "certificate_hash": "843b3ae38446bdc69c1f7aaa39fc333826ad0a14"
+          }
+        },
+        {
           "client_id": "632674462438-ngim50ueqspttdprl1iat3s88cji5h3f.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

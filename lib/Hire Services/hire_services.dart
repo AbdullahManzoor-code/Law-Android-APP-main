@@ -1,9 +1,12 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:law_app/Hire%20Services/form_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:accordion/accordion.dart';
 import 'package:custom_accordion/custom_accordion.dart';
+import 'package:law_app/components/common/timer.dart';
 
 class HireServices extends StatefulWidget {
   static const headerStyle = TextStyle(
@@ -23,10 +26,12 @@ class HireServices extends StatefulWidget {
   State<HireServices> createState() => _HireServicesState();
 }
 
-class _HireServicesState extends State<HireServices> {
+class _HireServicesState extends State<HireServices> with SingleTickerProviderStateMixin {
   String selectedCategory = "Consumer Contracts";
   String? selectedSubOption;
-
+   late AnimationController _animationController;
+  late Animation<double> _animation;
+   
   final List<Category> categories = [
     Category(
       backgroundColor: const Color.fromRGBO(159, 129, 247, 0.15),
@@ -39,7 +44,7 @@ class _HireServicesState extends State<HireServices> {
           subOptions: [
             AnotherOption(title: 'Air Plane', subOptions: [
               'Delay',
-              'Cancelled',
+              'Cancel',
               'Baggage Handling',
               'OverBooking',
             ]),
@@ -47,7 +52,7 @@ class _HireServicesState extends State<HireServices> {
               title: 'Train',
               subOptions: [
                 'Delay',
-                'Cancelled',
+                'Cancel',
                 'Baggage Handling',
               ],
             ),
@@ -58,7 +63,7 @@ class _HireServicesState extends State<HireServices> {
           subOptions: [
             AnotherOption(title: 'Reservation', subOptions: [
               'Delay',
-              'Cancelled',
+              'Cancel',
               'Baggage Handling',
               'OverBooking',
             ]),
@@ -66,7 +71,7 @@ class _HireServicesState extends State<HireServices> {
               title: 'Complaint',
               subOptions: [
                 'Delay',
-                'Cancelled',
+                'Cancel',
                 'Baggage Handling',
               ],
             ),
@@ -77,7 +82,7 @@ class _HireServicesState extends State<HireServices> {
           subOptions: [
             AnotherOption(title: 'Car Insurance', subOptions: [
               'Delay',
-              'Cancelled',
+              'Cancel',
               'Baggage Handling',
               'OverBooking',
             ]),
@@ -85,7 +90,7 @@ class _HireServicesState extends State<HireServices> {
               title: 'Home Insurance',
               subOptions: [
                 'Delay',
-                'Cancelled',
+                'Cancel',
                 'Baggage Handling',
               ],
             ),
@@ -104,7 +109,7 @@ class _HireServicesState extends State<HireServices> {
               title: 'Complaints',
               subOptions: [
                 'Delay',
-                'Cancelled',
+                'Cancel',
                 'Baggage Handling',
               ],
             ),
@@ -134,16 +139,16 @@ class _HireServicesState extends State<HireServices> {
               subOptions: [
                 // 'Implementation',
                 'Customer service',
-                'Cancelled',
+                'Cancel',
                 'Baggage Handling',
               ],
             ),
             AnotherOption(
               title: 'Marriage issues',
               subOptions: [
-                'Cancelled',
+                'Cancel',
                 'Booking and reservation issues',
-                // 'Cancelled',
+                // 'Cancel',
                 // 'Baggage Handling',
               ],
             ),
@@ -199,7 +204,7 @@ class _HireServicesState extends State<HireServices> {
           title: 'Data Archiving',
           subOptions: [
             AnotherOption(title: 'Deadlines', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -208,7 +213,7 @@ class _HireServicesState extends State<HireServices> {
               'Inadequate compensation',
             ]),
             AnotherOption(title: 'Copy export', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -217,7 +222,7 @@ class _HireServicesState extends State<HireServices> {
               'Inadequate compensation',
             ]),
             AnotherOption(title: 'Alerts', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -363,7 +368,7 @@ class _HireServicesState extends State<HireServices> {
           title: 'Data Archiving',
           subOptions: [
             AnotherOption(title: 'Contract copy', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -372,7 +377,7 @@ class _HireServicesState extends State<HireServices> {
               'Inadequate compensation',
             ]),
             AnotherOption(title: 'Deadlines', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -381,7 +386,7 @@ class _HireServicesState extends State<HireServices> {
               'Inadequate compensation',
             ]),
             AnotherOption(title: 'Copy export', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -390,7 +395,7 @@ class _HireServicesState extends State<HireServices> {
               'Inadequate compensation',
             ]),
             AnotherOption(title: 'Alerts', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -412,7 +417,7 @@ class _HireServicesState extends State<HireServices> {
           title: 'Specialties',
           subOptions: [
             AnotherOption(title: 'Contract copy', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -421,7 +426,7 @@ class _HireServicesState extends State<HireServices> {
               'Inadequate compensation',
             ]),
             AnotherOption(title: 'Deadlines', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -430,7 +435,7 @@ class _HireServicesState extends State<HireServices> {
               'Inadequate compensation',
             ]),
             AnotherOption(title: 'Copy export', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -439,7 +444,7 @@ class _HireServicesState extends State<HireServices> {
               'Inadequate compensation',
             ]),
             AnotherOption(title: 'Alerts', subOptions: [
-              'Cancelled',
+              'Cancel',
               'Delay',
               'Baggage Handling',
               'OverBooking Complaints',
@@ -459,115 +464,52 @@ class _HireServicesState extends State<HireServices> {
     //   subOptions: ['Construction Claims', 'Patent Disputes'],
     // ),
   ];
+ @override
+  void initState() {
+    super.initState();
+     _scrollController.addListener(() {
+      // Update turns based on the scroll offset
+      setState(() {
+        // Assuming a scroll direction of 0 to 1 maps to rotation 0 to 1
+        turns = (_scrollController.offset / 200) % 1; // Adjust 200 to match the scrollable width
+      });
+    });
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    )..addListener(() {
+        setState(() {});
+      });
+  _animation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.elasticOut,
+      ),
+    );
+  }
+   double turns = 0.0;
 
+ 
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final Category? category = categories.firstWhereOrNull(
       (cat) => cat.title == selectedCategory,
     );
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(
-            'Select Category',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: const Color.fromARGB(255, 159, 129, 247).withOpacity(1),
-            ),
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(right: 8, top: 5),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                'swipe to see more ',
-                style:
-                    TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),
-              ),
-              Icon(
-                Icons.arrow_forward,
-                size: 17,
-                color: Colors.grey,
-              )
-            ],
-          ),
-        ),
-        const SizedBox(height: 15),
-        SizedBox(
-          height: 150, // Adjust height as needed
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final cat = categories[index];
-              bool isSelected = selectedCategory == cat.title;
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedCategory = cat.title;
-                    selectedSubOption =
-                        null; // Reset selected sub-option when changing category
-                  });
-                },
-                child: Transform.scale(
-                  scale: isSelected ? 1 : 0.9,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 500),
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    width: selectedCategory == cat.title ? 150 : 152,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: cat.backgroundColor,
-                      border: Border.all(
-                        width: 2,
-                        color: selectedCategory == cat.title
-                            ? cat.labelColor
-                            : Colors.transparent,
-                      ),
-                    ),
-                    child: Transform.scale(
-                      scale: isSelected ? 1.1 : 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            cat.icon,
-                            color: cat.labelColor,
-                            size: 32,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            cat.title,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: cat.labelColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        if (category != null && category.subOptions.isNotEmpty) ...[
+    return IdleTimeoutWrapper(
+      child: Column(
+        children: [
           Padding(
-            padding: const EdgeInsets.only(
-              top: 25,
-              left: 16,
-              right: 16,
-              bottom: 2,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
-              'Select Sub-Option',
+              'Select Category',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -575,44 +517,160 @@ class _HireServicesState extends State<HireServices> {
               ),
             ),
           ),
-          Expanded(
+          Container(
+            margin: const EdgeInsets.only(right: 8, top: 5),
+            child:  Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Text(
+                //   'swipe to see more ',
+                //   style:
+                //       TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),
+                // ),
+                AnimatedRotation(
+              turns: turns,
+              duration:Durations.extralong1,
+              child: Icon(
+                 Icons.swipe_right_outlined,
+                  size: 17,
+                  color: Colors.grey,
+              ),
+            ),
+               
+              ],
+            ),
+          ),
+          const SizedBox(height: 15),
+          SizedBox(
+            height: 150, // Adjust height as needed
             child: ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: category.subOptions.length,
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
               itemBuilder: (context, index) {
-                final subOption = category.subOptions[index];
-                return Container(
-                  margin: const EdgeInsets.only(
-                      left: 20, right: 20, top: 5, bottom: 5),
-                  child: CustomAccordion(
-                    title: subOption.title,
-                    headerBackgroundColor: Colors.blue,
-                    titleStyle: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    toggleIconOpen: Icons.keyboard_arrow_down_sharp,
-                    toggleIconClose: Icons.keyboard_arrow_up_sharp,
-                    headerIconColor: Colors.white,
-                    accordionElevation: 0,
-                    widgetItems: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        MyNestedAccordion(
-                          selectedCategory: selectedCategory,
-                          selectedCategoryOption: subOption.title,
-                          subOptions: subOption.subOptions,
+                final cat = categories[index];
+                bool isSelected = selectedCategory == cat.title;
+                return GestureDetector(
+                  onTap: () {
+
+
+                    setState(() {                      setState(() {
+      selectedCategory = cat.title;
+      selectedSubOption = null; // Reset selected sub-option when changing category
+    });
+    _animationController.forward().then((_) {
+      _animationController.reverse();
+    });
+                    });
+                  },
+                  child: Transform.scale(
+    scale: isSelected ? 1 : 0.9,
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      width: selectedCategory == cat.title ? 150 : 152,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: cat.backgroundColor,
+        border: Border.all(
+          width: 2,
+          color: selectedCategory == cat.title
+              ? cat.labelColor
+              : Colors.transparent,
+        ),
+      ),
+      child: Transform.scale(
+        scale: isSelected ? 1.1 : 1,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ScaleTransition(
+              scale: isSelected ?_animation :AlwaysStoppedAnimation(1),
+              child: Icon(
+                cat.icon,
+                color: cat.labelColor,
+                size: 32,
+              ),
+            ),
+                            const SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                cat.title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: cat.labelColor,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 );
               },
             ),
           ),
+          if (category != null && category.subOptions.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 25,
+                left: 16,
+                right: 16,
+                bottom: 2,
+              ),
+              child: Text(
+                'Select Sub-Option',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: const Color.fromARGB(255, 159, 129, 247).withOpacity(1),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                physics:  const AlwaysScrollableScrollPhysics(),
+                itemCount: category.subOptions.length,
+                itemBuilder: (context, index) {
+                  final subOption = category.subOptions[index];
+                  return Container(
+                    margin: const EdgeInsets.only(
+                        left: 20, right: 20, top: 5, bottom: 5),
+                    child: CustomAccordion(
+                      title: subOption.title,
+                      headerBackgroundColor: Colors.blue,
+                      titleStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      toggleIconOpen: Icons.keyboard_arrow_down_sharp,
+                      toggleIconClose: Icons.keyboard_arrow_up_sharp,
+                      headerIconColor: Colors.white,
+                      accordionElevation: 0,
+                      widgetItems: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          MyNestedAccordion(
+                            selectedCategory: selectedCategory,
+                            selectedCategoryOption: subOption.title,
+                            subOptions: subOption.subOptions,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -700,7 +758,7 @@ class MyNestedAccordion extends StatelessWidget //__
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => FormPage(
+                              builder: (context) => FormPage(isfromorder: false,oderID: "",
                                 selectedCategory: selectedCategory,
                                 selectedCategoryOption: selectedCategoryOption,
                                 selectedCategorySubOption: sbOption.title,
