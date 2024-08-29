@@ -861,30 +861,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.6.6"
-  github:
-    dependency: "direct main"
-    description:
-      name: github
-      sha256: "57f6ad78591f9638e903409977443093f862d25062a6b582a3c89e4ae44e4814"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.24.0"
-  github_signin_aksoyhlc:
-    dependency: "direct main"
-    description:
-      name: github_signin_aksoyhlc
-      sha256: "561be55d68c4001c9f2c122ad72cac48b03595870c3450a56b09c371b0915884"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.4"
-  go_router:
-    dependency: "direct main"
-    description:
-      name: go_router
-      sha256: "2ddb88e9ad56ae15ee144ed10e33886777eb5ca2509a914850a5faa7b52ff459"
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.2.7"
   google_identity_services_web:
     dependency: transitive
     description:
@@ -1165,14 +1141,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
-  logging:
-    dependency: transitive
-    description:
-      name: logging
-      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   markdown:
     dependency: transitive
     description:
@@ -1317,14 +1285,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.11.1"
-  pdf_render:
-    dependency: "direct main"
-    description:
-      name: pdf_render
-      sha256: bacd2ad8f4f4c9821827003065f5c2f9ca474dd418ff29c68272aab4c0e1e88b
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.12"
   pdf_widget_wrapper:
     dependency: transitive
     description:
@@ -1333,14 +1293,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  pdftron_flutter:
-    dependency: "direct main"
-    description:
-      name: pdftron_flutter
-      sha256: c0a0962b9b46afbb90a0799aa851ac726771996413ea00d2f466a8c63527eb55
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1-32"
   petitparser:
     dependency: transitive
     description:
@@ -1454,7 +1406,7 @@ packages:
     source: hosted
     version: "5.0.0"
   shared_preferences:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: shared_preferences
       sha256: "746e5369a43170c25816cc472ee016d3a66bc13fcf430c0bc41ad7b4b2922051"
@@ -1606,18 +1558,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: ca34210d70dd7ecb77489c21c8131a7f5546dea47780cd5f510326348091cb42
+      sha256: "85f96b7b06f32a60b19ab0bb8c32bf162a0474f2d94f4844384be1118e6b4954"
       url: "https://pub.dev"
     source: hosted
-    version: "26.2.10"
+    version: "26.2.11"
   syncfusion_flutter_pdf:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_pdf
-      sha256: "864e45c6574f39daaa12fd3df94a224a7cf40cfe1995413d78960cff87d71090"
+      sha256: "0bf5986a8ea7afc54d5712c54f1aba8530be0920872c9dbbe5e0c4369d51eef8"
       url: "https://pub.dev"
     source: hosted
-    version: "26.2.10"
+    version: "26.2.11"
   term_glyph:
     dependency: transitive
     description:
