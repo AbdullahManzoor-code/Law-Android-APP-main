@@ -58,8 +58,8 @@ dependencies:
   dotted_border: ^2.1.0
   flutter_web_auth: ^0.5.0
   fluttertoast: ^8.2.6
-  github: ^9.24.0
-  github_signin_aksoyhlc: ^0.0.4
+  # github: ^9.24.0
+  # github_signin_aksoyhlc: ^0.0.4
   flutter_quill_extensions: ^10.1.9
   path_provider: ^2.1.4
   flutter_quill_to_pdf: ^2.2.3
@@ -81,7 +81,6 @@ dependencies:
   flutter_riverpod: ^2.5.1
   docx_to_text: ^1.0.1
   firebase_dynamic_links: ^6.0.4
-  pdf_render: ^1.4.12
   pdftron_flutter: ^1.0.1-32
   syncfusion_flutter_pdf: ^26.2.10
   flutter_facebook_auth: ^7.1.0
