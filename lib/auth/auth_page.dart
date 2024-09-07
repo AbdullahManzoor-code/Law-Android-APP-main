@@ -37,6 +37,7 @@ class AuthPage extends StatelessWidget {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         showToast(message: "Error reloading user data.");
                       });
+                      
                       return const Center(child: Text('Error reloading data.'));
                     } else {
                       // User data reloaded

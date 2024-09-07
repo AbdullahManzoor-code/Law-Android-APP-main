@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter/material.dart';
 
+  String userEmail = "";
 class LoginWithFacebook extends StatefulWidget {
   const LoginWithFacebook({Key? key}) : super(key: key);
 
@@ -16,7 +17,6 @@ class LoginWithFacebook extends StatefulWidget {
 
 class _LoginWithFacebookState extends State<LoginWithFacebook> {
 
-  String userEmail = "";
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +28,6 @@ class _LoginWithFacebookState extends State<LoginWithFacebook> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text("User Email: "), Text(userEmail)],
-              ),
-            ),
             ElevatedButton(onPressed: () async {
               await signInWithFb();
 

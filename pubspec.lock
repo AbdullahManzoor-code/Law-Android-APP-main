@@ -1125,14 +1125,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.2"
-  linkedin_login:
-    dependency: "direct main"
-    description:
-      name: linkedin_login
-      sha256: "4d8a165167c7a82a088d1fcb75fbe8dbe51509ae1b1305840a5c67cb3ee5c84f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.5"
   lints:
     dependency: transitive
     description:
@@ -1285,14 +1277,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.11.1"
-  pdf_render:
-    dependency: "direct main"
-    description:
-      name: pdf_render
-      sha256: bacd2ad8f4f4c9821827003065f5c2f9ca474dd418ff29c68272aab4c0e1e88b
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.12"
   pdf_widget_wrapper:
     dependency: transitive
     description:
@@ -1389,14 +1373,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.1"
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.27.7"
   scroll_to_index:
     dependency: transitive
     description:

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+import 'package:law_app/text_editor/docments.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:law_app/Google%20meetup/google_meetup.dart';
 import 'package:law_app/Hire%20Quickly/hire_quickly.dart';
@@ -149,6 +150,9 @@ class HomePageState extends State<HomePage>
                   case 'Text Editor':
                     selectedWidget = const TextEditorScreen();
                     break;
+                     case 'doc':
+                    selectedWidget = const DocumentNamesPage();
+                    break;
                   case 'Profile':
                     selectedWidget = const ProfileView();
                     break;
@@ -256,6 +260,8 @@ class _SliderViewState extends State<_SliderView> {
                 Menu(Icons.work, 'Hire Services'),
                 Menu(Icons.flash_on, 'Hire Quickly'),
                 Menu(Icons.receipt, 'Orders'),
+                                Menu(Icons.document_scanner, 'doc'),
+
                 Menu(Icons.meeting_room, 'Google Meetup'),
                 Menu(Icons.edit, 'Text Editor'),
                 Menu(Icons.person, 'Profile'),

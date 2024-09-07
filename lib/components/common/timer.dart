@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:law_app/auth/login_page.dart';
 
 class IdleTimeoutWrapper extends StatefulWidget {
   final Widget child;
@@ -9,7 +10,7 @@ class IdleTimeoutWrapper extends StatefulWidget {
   const IdleTimeoutWrapper({
     Key? key,
     required this.child,
-    this.timeoutDuration = const Duration(minutes: 30),
+    this.timeoutDuration = const Duration(minutes: 10),
   }) : super(key: key);
 
   @override
@@ -45,14 +46,15 @@ class _IdleTimeoutWrapperState extends State<IdleTimeoutWrapper> {
     _startTimer();
   }
 
-  void _signOutUser() async {
-    // Perform sign-out operation (e.g., using Firebase Auth)
+  Future<void> _signOutUser() async {
     await FirebaseAuth.instance.signOut();
 
-    // Optionally navigate the user to the login screen
-    // Navigator.of(context).pushReplacement(
-    //   MaterialPageRoute(builder: (context) => LoginScreen()),
-    // );
+    // Navigate to the login screen
+    // if (context.mounted) {
+    //   Navigator.of(context).pushReplacement(
+    //     MaterialPageRoute(builder: (context) => LoginPage()),
+    //   );
+    // }
   }
 
   @override

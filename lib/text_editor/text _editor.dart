@@ -1,5 +1,8 @@
-  import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:law_app/components/common/timer.dart';
+import 'package:law_app/components/common/uploadtask.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
@@ -24,6 +27,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
   final FocusNode _focusNode = FocusNode();
   
   bool loading=false;
+
 
   Future<void> selectFiles() async {
     setState(() {
@@ -128,6 +132,7 @@ Future<List<int>> _readDocumentData(String filePath) async {
   //     return '';
   //   }
   // }
+  final user = FirebaseAuth.instance.currentUser;
 
 
   Future<String> _readDocxFile(File file) async {
@@ -168,6 +173,7 @@ final doc = docxToText(bytes);
       );
     }
   }
+  late final  link;
 
   Future<void> saveAndPrintPDF() async {
     try {
@@ -188,7 +194,7 @@ final doc = docxToText(bytes);
       await Printing.layoutPdf(
         onLayout: (format) async => pdfDocument.save(),
       );
-
+  
       showToast(message: 'PDF generated and print dialog opened.');
     } catch (e) {
       showToast(
@@ -197,15 +203,121 @@ final doc = docxToText(bytes);
       );
     }
   }
+Future<void> storeFirebase() async {
+    TextEditingController docNameController = TextEditingController();
+
+    // Show dialog to ask for document name
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Document Name'),
+          content: TextField(
+            controller: docNameController,
+            decoration: const InputDecoration(
+              hintText: 'Enter document name',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog without saving
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (docNameController.text.isNotEmpty) {
+                  Navigator.of(context).pop(); // Close the dialog and proceed
+                } else {
+                  showToast(
+                    message: "Please enter a document name.",
+                    backgroundColor: Colors.red,
+                  );
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (docNameController.text.isEmpty) {
+      return; // If no name is provided, exit the function
+    }
+
+    // Check for duplicate names
+    final docName = docNameController.text;
+    final documentsCollection = FirebaseFirestore.instance
+        .collection('Documents')
+        .doc(user!.uid)
+        .collection('documents');
+
+    final querySnapshot = await documentsCollection
+        .where('name', isEqualTo: docName)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // If a document with the same name already exists
+      showToast(
+        message: "A document with this name already exists.",
+        backgroundColor: Colors.red,
+      );
+      return; // Exit the function
+    }
+
+    try {
+      // Saving the document with the provided name
+      final directory = await getApplicationDocumentsDirectory();
+      final path = '${directory.path}/document.pdf';
+
+      final pdfConverter = PDFConverter(
+        document: _controller.document.toDelta(),
+        params: PDFPageFormat.a4,
+        frontMatterDelta: null,
+        backMatterDelta: null,
+        fallbacks: [],
+      );
+      final pdfDocument = await pdfConverter.createDocument();
+
+      final file = File(path);
+      await file.writeAsBytes(await pdfDocument!.save());
+
+      // Upload the document to Firebase Storage
+      final link = await storeToFirebase(file, "/texteditor/doc/");
+
+      // Save document details to Firestore
+      await documentsCollection.add({
+        'doc': link,
+        'name': docName, // Saving the document with user-provided name
+        'createdAt': Timestamp.now(),
+      });
+
+      showToast(message: "Document uploaded successfully!");
+
+    } catch (e) {
+      showToast(
+        message: "Unable to upload the document: $e",
+        backgroundColor: Colors.red,
+      );
+    }  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: IdleTimeoutWrapper(
         child: Scaffold(
+          
           floatingActionButton: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: [ FloatingActionButton(
+                onPressed: (){storeFirebase();},
+                heroTag: 'uploadFileBtn',
+                child: const Icon(Icons.save),
+              ),
+                            const SizedBox(height: 10),
+
               FloatingActionButton(
                 onPressed: selectFiles,
                 heroTag: 'uploadFileBtn',

@@ -18,20 +18,18 @@ class LocationDetails {
 }
 
 // Notifier class to handle the state
-class LocationNotifier extends Notifier<LocationDetails?> {
-  @override
-  LocationDetails? build() {
+class LocationNotifier extends StateNotifier<LocationDetails?> {
+  LocationNotifier() : super(null) {
     fetchIpAndLocation();
-    return null;
   }
 
   Future<void> fetchIpAndLocation() async {
     try {
       // Step 1: Get the IP address
-      String? ipAddress = await _getIpAddress();
-      if (ipAddress != null) {
+      // String? ipAddress = await _getIpAddress();
+      // if (ipAddress != null) {
         // Step 2: Get the location details
-        Map<String, dynamic>? locationDetails = await _getLocationDetails(ipAddress);
+        Map<String, dynamic>? locationDetails = await _getLocationDetails();
         if (locationDetails != null) {
           String country = locationDetails['country_name'] ?? 'Unknown';
           String language = locationDetails['languages'] ?? 'Unknown';
@@ -39,12 +37,12 @@ class LocationNotifier extends Notifier<LocationDetails?> {
 
           // Update the state with the fetched details
           state = LocationDetails(
-            ipAddress: ipAddress,
+            ipAddress: "154.192.132.37",
             country: country,
             language: language,
             currency: currency,
           );
-        }
+        
       }
     } catch (e) {
       print('Error: $e');
@@ -63,9 +61,9 @@ class LocationNotifier extends Notifier<LocationDetails?> {
     return null;
   }
 
-  Future<Map<String, dynamic>?> _getLocationDetails(String ipAddress) async {
-    final apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
-    final url = 'https://ipapi.co/$ipAddress/json/?key=$apiKey';
+  Future<Map<String, dynamic>?> _getLocationDetails() async {
+    String ipAddress="154.192.132.37";
+    final url = 'https://ipapi.co/$ipAddress/json/';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -80,6 +78,6 @@ class LocationNotifier extends Notifier<LocationDetails?> {
 }
 
 // Riverpod provider for the notifier
-// final locationProvider = NotifierProvider((ref) {
-//   return LocationNotifier();
-// });
+final locationProvider = StateNotifierProvider<LocationNotifier, LocationDetails?>((ref) {
+  return LocationNotifier();
+});

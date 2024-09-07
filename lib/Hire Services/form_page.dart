@@ -152,7 +152,7 @@ Future<Map<String, dynamic>> loadOrderData(String orderId) async {
 }
  void processOrderData()async {
 final   orderData= await loadOrderData(widget.oderID);
-
+ _nameController.text=orderData['name'];
  _whatsappController.text = orderData['whatsapp'];
  _emailController.text = orderData['email'];
  _messageController.text = orderData['message'];
@@ -163,7 +163,8 @@ final   orderData= await loadOrderData(widget.oderID);
 //  userId = orderData['userId'];
 //  status = orderData['status'];
   // = orderData['subject'];
-   fileUrls = orderData['fileUrl'];
+   fileUrls = orderData['fileUrl']??'';
+   
  selectedOption = orderData['extraOption'];
 //  totalPrice = orderData['totalPrice'];
 //    timestamp = orderData['timestamp'];
@@ -267,6 +268,7 @@ final   orderData= await loadOrderData(widget.oderID);
           context,
           MaterialPageRoute(
             builder: (context) => PayNowPage(
+              whatsapp:_whatsappController.text.trim(),
               isfromorder: false,
               docRef: reference,
               name: _nameController.text.trim(),

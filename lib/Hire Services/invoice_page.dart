@@ -288,6 +288,7 @@ class _InvoicePageState extends State<InvoicePage> {
                     const Icon(Icons.person, color: Colors.blue),
                     const SizedBox(width: 10),
                     Text('Customer Name: ${customer.name}'),
+                    
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -502,7 +503,7 @@ class _InvoicePageState extends State<InvoicePage> {
                         pw.SizedBox(height: 10),
                         pw.Text('Customer Name: ${customer.name}'),
                         pw.Text('Customer Email: ${customer.email}'),
-                        pw.Text('Customer Address: ${customer.address}'),
+                        pw.Text('Customer phone: ${customer.address}'),
                       ],
                     ),
                   ),

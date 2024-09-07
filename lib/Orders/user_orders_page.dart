@@ -28,8 +28,9 @@ class _OrderPageState extends State<OrderPage> {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
-      body: FutureBuilder<QuerySnapshot>(
-        future: orders.where('userId', isEqualTo: uid).get(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: orders.where('userId', isEqualTo: uid).            orderBy('timestamp', descending: true)
+.snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -77,6 +78,7 @@ class _OrderPageState extends State<OrderPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => PayNowPage(
+                          whatsapp: orderData['whatsapp'],
                           isfromorder: true,
                           docRef: order.reference,
                           name: orderData["name"],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:law_app/components/Email/send_email_emailjs.dart';
 import 'package:law_app/components/common/timer.dart';
 import 'package:law_app/components/toaster.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -15,48 +16,13 @@ class _SchedulMeetingState extends State<SchedulMeeting> {
   @override
   void initState() {
     super.initState();
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (url) {
-            if (url == "https://zcal.co/i/7HMuXETO/done") {
-              Navigator.pop(context);
-
-            }
-          },
-          onUrlChange: (change) {
-            if (change == "https://zcal.co/i/7HMuXETO/done") {
-                            showToast(message: "Event sucessfully added ");
-
-              Navigator.pop(context);
-            }
-          },
-          onPageFinished: (String url) {
-            // Check the URL and navigate back if it matches
-            if (url == "https://zcal.co/i/7HMuXETO/done") {
-              Navigator.pop(context);
-            }
-          },
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url == "https://zcal.co/i/7HMuXETO/done") {
-              Navigator.pop(context);
-              return NavigationDecision.prevent; // Prevent further navigation
-            }
-            if (request == "https://zcal.co/i/7HMuXETO/done") {
-              Navigator.pop(context);
-            }
-            return NavigationDecision.navigate; // Allow the navigation
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(webUrl));
+    _webViewController = WebViewController();
+     
   }
 
   @override
   Widget build(BuildContext context) {
-    _webViewController = WebViewController()
+    _webViewController
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
@@ -66,13 +32,21 @@ class _SchedulMeetingState extends State<SchedulMeeting> {
           },
           onUrlChange: (change) {
             if (change.url == "https://zcal.co/i/7HMuXETO/done") {
+                                                        showToast(message: "Event sucessfully added ");
+
               Navigator.pop(context);
             }
           },
-          onPageStarted: (String url) {},
+          onPageStarted: (String url) {
+            
+          },
           onPageFinished: (String url) {},
-          onHttpError: (HttpResponseError error) {},
-          onWebResourceError: (WebResourceError error) {},
+          onHttpError: (HttpResponseError error) {
+            showToast(message: error.toString());
+          },
+          onWebResourceError: (WebResourceError error) {
+            showToast(message: "${error.toString()}");
+          },
           onNavigationRequest: (NavigationRequest request) {
             return NavigationDecision.navigate;
           },

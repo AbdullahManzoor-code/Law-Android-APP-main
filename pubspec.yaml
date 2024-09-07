@@ -52,7 +52,7 @@ dependencies:
   flutter_stripe: ^11.0.0
   delightful_toast: ^1.1.0
   printing: ^5.7.2
-  linkedin_login: ^3.0.5
+  # linkedin_login: ^3.0.5
   carousel_slider: ^4.2.1
   file_picker: ^8.0.0+1
   dotted_border: ^2.1.0
@@ -81,7 +81,7 @@ dependencies:
   flutter_riverpod: ^2.5.1
   docx_to_text: ^1.0.1
   firebase_dynamic_links: ^6.0.4
-  pdf_render: ^1.4.12
+  # pdf_render: ^1.4.12
   pdftron_flutter: ^1.0.1-32
   syncfusion_flutter_pdf: ^26.2.10
   flutter_facebook_auth: ^7.1.0

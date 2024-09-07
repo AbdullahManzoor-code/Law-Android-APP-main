@@ -41,6 +41,7 @@ class PayNowPage extends StatefulWidget {
   final String message;
   final String services;
   final bool isfromorder;
+  final String whatsapp;
   final DocumentReference<Object?> docRef;
   // ignore: use_super_parameters
   PayNowPage(
@@ -56,7 +57,7 @@ class PayNowPage extends StatefulWidget {
       required this.subject,
       required this.message,
       required this.services,
-      required this.docRef,required this.isfromorder})
+      required this.docRef,required this.isfromorder, required this.whatsapp})
       : super(key: key);
 
   @override
@@ -236,14 +237,15 @@ Future<File> pdfgent() async {
 
   final invoice = Invoice(
     supplier: const Supplier(
-      name: 'Sarah Field',
-      address: 'Sarah Street 9, Beijing, China',
-      paymentInfo: 'https://paypal.me/sarahfieldzz',
+      name: '',
+      address: '',
+      paymentInfo: '',
     ),
-    customer: const Customer(
-      name: 'Apple Inc.',
-      address: 'Apple Street, Cupertino, CA 95014',
+    customer:  Customer(
+      name: widget.name,
+      address:widget.whatsapp,
     ),
+
     info: InvoiceInfo(
       date: date,
       dueDate: dueDate,
@@ -318,7 +320,7 @@ Future<void> fetchOrderStatus() async {
 }
 
 Future<void> makePayment() async {
-  // try {
+  try {
     await handlePaymentCreation();
     await generateAndSavePDFReceipt();
     await updateOrderStatus(widget.docRef.id, receipt!);
@@ -331,9 +333,9 @@ Future<void> makePayment() async {
       
       'r_qrcode_link': link!});
     await sendEmails();
-  // } catch (e) {
-  //   showToast(message: e.toString());
-  // }
+  } catch (e) {
+    showToast(message: e.toString());
+  }
 }
   @override
   Widget build(BuildContext context) {
@@ -690,7 +692,7 @@ Future<void> makePayment() async {
                         onPressed: () {
                           // makePayment();
                           (isPaid||isshowbutton)
-                              ? {showToast(message: "you have already pay"),generateAndUploadQRCode()}
+                              ? {showToast(message: "you have already pay")}
                               : makePayment();
                           // generatepdf();
                         },

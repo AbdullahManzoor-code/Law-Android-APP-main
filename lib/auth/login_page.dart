@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:law_app/Home/home_page.dart'; 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:law_app/auth/authProviders/fb_aurh.dart';
-import 'package:law_app/auth/authProviders/githubauth.dart';
+
 
 import 'package:law_app/auth/authProviders/googleAuth.dart';
-import 'package:law_app/auth/authProviders/x.dart';
 import 'package:law_app/auth/signup_page.dart';
 import 'package:law_app/components/toaster.dart';
 import 'package:twitter_login/twitter_login.dart';
@@ -416,40 +415,40 @@ Future<void> loginWithEmailPassword() async {
                     ],
                   ),
                 ),
-                // GestureDetector(
-                //         onTap: () async {
-                //           try {
-                //             // UserCredential userCredential =
-                //             //    await signInWithTwitter();
-                //             // if (context.mounted) {
-                //             //   Navigator.push(
-                //             //       context,
-                //             //       MaterialPageRoute(
-                //             //           builder: (context) => HomePage()));
-                //             // }
-                //             // ignore: unnecessary_null_comparison
-                //             // if (userCredential != null) {
-                //             //   Navigator.push(
-                //             //       // ignore: use_build_context_synchronously
-                //             //       context,
-                //             //       MaterialPageRoute(
-                //             //           builder: (context) => const HomePage()));
-                //             // }
-                //              Navigator.push(
-                //                   // ignore: use_build_context_synchronously
-                //                   context,
-                //                   MaterialPageRoute(
-                //                       builder: (context) =>  LoginWithFacebook()));
-                //           } catch (e) {
-                //             showToast(message: e.toString());
-                //           }
-                //         },
-                //         child: Image.asset('assets/images/x.jpg',
-                //             height: 50, width: 40),
-                //       ),
+                GestureDetector(
+                        onTap: () async {
+                          try {
+                            // UserCredential userCredential =
+                            //    await signInWithTwitter();
+                            // if (context.mounted) {
+                            //   Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //           builder: (context) => HomePage()));
+                            // }
+                            // ignore: unnecessary_null_comparison
+                            // if (userCredential != null) {
+                            //   Navigator.push(
+                            //       // ignore: use_build_context_synchronously
+                            //       context,
+                            //       MaterialPageRoute(
+                            //           builder: (context) => const HomePage()));
+                            // }
+                             Navigator.pushReplacement(
+                                  // ignore: use_build_context_synchronously
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>  LoginWithFacebook()));
+                          } catch (e) {
+                            showToast(message: e.toString());
+                          }
+                        },
+                        child: Image.asset('assets/images/fb.png',
+                            height: 50, width: 40),
+                      ),
                     
-                //   const SizedBox(width: 50,)
-                // ,
+                  const SizedBox(width: 50,)
+                ,
                 // GestureDetector(
                 //   onTap: () {
                 //     Navigator.of(context).push(_createRoute());

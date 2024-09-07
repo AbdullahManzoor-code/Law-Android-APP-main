@@ -274,8 +274,9 @@ Country? country;
   int index = 0;
 
   for (int i = 0; i < pattern.toString().length; i++) {
-    if (pattern.toString()[i] == '#') {
+    if (pattern.toString()[i] == '-') {
       if (index < value.length) {
+        _phoneController.text += ' ';
       }
     } else {
     }
