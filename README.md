@@ -58,8 +58,6 @@ Follow these steps to set up the Lawyer Hiring App on your local machine:
    git clone https://github.com/Abdullahmanzoor-code/lawyer-hiring-app.git
 Navigate to the Project Directory:
 
-bash
-Copy code
 cd lawyer-hiring-app
 Install Dependencies:
 Run the following command:
