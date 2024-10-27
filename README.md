@@ -104,8 +104,7 @@ This project is licensed under the MIT License. See the LICENSE file for more in
 
 For any inquiries or feedback, please contact:
 
-
-**Abdullah **
+**Abdullah**
 Email: abdullahmiang4@gmail.com
 GitHub: Abdullahmanzoor-code
 
