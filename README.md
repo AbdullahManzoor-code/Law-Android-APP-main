@@ -64,8 +64,6 @@ cd lawyer-hiring-app
 Install Dependencies:
 Run the following command:
 
-bash
-Copy code
 flutter pub get
 Set Up Google Meet API & Payment Gateway:
 Configure the third-party APIs (like Google Meet and your payment provider).
@@ -100,16 +98,13 @@ Contributions are welcome! Follow these steps to contribute:
 
 Fork the Repository on GitHub.
 Create a New Branch for your feature or fix:
-bash
-Copy code
+
 git checkout -b feature-name
 Commit Your Changes:
-bash
-Copy code
+
 git commit -m "Add new feature"
 Push to Your Branch:
-bash
-Copy code
+
 git push origin feature-name
 Create a Pull Request to merge your branch into the main repository.
 License
@@ -125,7 +120,6 @@ GitHub: Abdullahmanzoor-code
 Acknowledgements
 Thank you to everyone who contributed to this project. If you encounter any issues or have suggestions, please open an issue on GitHub.
 
-Copy code
 
 
 
