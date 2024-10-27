@@ -118,12 +118,6 @@ Email: abdullahmiang4@gmail.com
 GitHub: Abdullahmanzoor-code
 
 Acknowledgements
-Thank you to everyone who contributed to this project. If you encounter any issues or have suggestions, please open an issue on GitHub.
+If you encounter any issues or have suggestions, please open an issue on GitHub.
 
 
-
-
-
-
-You said:
-write all above in sheet 
